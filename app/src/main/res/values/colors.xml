@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <color name="main_color">#ffd704</color>
+    <color name="second_color">#f5cd03</color>
+    <color name="dark_gray">#212138</color>
+    <color name="divder_color">#e0e0e0</color>
+    <color name="second_page_bg">#f7f7f7</color>
+    <color name="press_color">#f0f0f0</color>
+    <color name="black_press">#2d2d47</color>
+    <color name="black_nomal">#ecc93c</color>
+    <color name="black_pressed">#dbbb26</color>
+
+    <color name="edittext_boder_color">#7e7e7e</color>
+
+    <color name="tab_text_color">#222222</color>
+    <color name="text_gray_color">#333333</color>
+    <color name="black">#000000</color>
+    <color name="text_color">#303030</color>
+
+    <!-- version 3.0.0 -->
+    <!--<color name="a">#FFff8300</color>-->
+    <color name="a">#FFC200</color>
+    <color name="b">#FFfff3e7</color>
+    <color name="c">#FFf8614e</color>
+    <color name="d">#FF222222</color>
+    <color name="e">#FF505050</color>
+    <color name="f">#FF999999</color>
+    <color name="g">#FFbbbbbb</color>
+    <color name="h">#FF777777</color>
+    <color name="i">#FF7790bc</color>
+    <color name="j">#FFdddddd</color>
+    <color name="k">#FFe8e8e8</color>
+    <color name="l">#FFf5f5f5</color>
+    <color name="m">#FFffffff</color>
+    <color name="n">#FFfafafa</color>
+
+    <color name="divider_tool_bar">@color/g</color>
+
+    <color name="collect_item_gif_color">@color/i</color>
+    <color name="collect_item_pic_color">@color/c</color>
+    <color name="collect_item_video_color">@color/a</color>
+    <color name="collect_item_joke_color">@color/c</color>
+
+    <color name="loading_text_color">#243552</color>
+    <color name="transparent_40">#66000000</color>
+    <color name="transparent_80">#CC000000</color>
+    <color name="transparent_21">#33000000</color>
+    <color name="transparent_50">#7f000000</color>
+    <!--<color name="pic_black_bg">#FF1b1b1b</color>-->
+    <!--<color name="pic_black_bg_transparent_40">#661b1b1b</color>-->
+    <color name="pic_black_bg">#FF000000</color>
+    <color name="pic_black_bg_transparent_40">#66000000</color>
+
+    <color name="bg_app">@color/m</color>
+
+    <color name="bg_mine_page">@color/l</color>
+
+    <!--新闻条目tag的边框及字体颜色-->
+    <color name="news_tag">#f8614e</color>
+
+    <!--分割线颜色-->
+    <color name="line_divider">@color/k</color>
+
+    <color name="gif_joke_line_divider">@color/l</color>
+
+    <!--新闻详情页中相关新闻框背景-->
+    <color name="bg_related_news_frame">@color/j</color>
+
+    <color name="bg_pic">#0a000000</color>
+
+    <!--新闻列表条目view背景未点击颜色-->
+    <color name="bg_news_item_normal">#ffffff</color>
+    <!--新闻列表条目view背景点击颜色-->
+    <color name="bg_news_item_pressed">@color/l</color>
+    <!-- 等待界面 -->
+    <color name="wait_back_color">#cc000000</color>
+
+    <!--新闻列表视频条目间隔条颜色-->
+    <color name="bg_video_item_gap">#FFdfdfdf</color>
+
+    <!--新闻列表视频条目间隔条-->
+    <color name="bg_news_shield_view">#FFf8614e</color>
+
+    <!--区域分割View背景色,用于下拉刷新背景,新闻上次读到提示条背景色等-->
+    <color name="bg_region_segment">#FFf5f5f5</color>
+
+    <color name="bg_shied_pop">#fdd603</color>
+
+    <color name="bg_toast">#cc000000</color>
+    <!--收藏页删除字体颜色-->
+    <color name="delete">#cc000000</color>
+
+    <!-- 下拉刷新颜色值 -->
+    <color name="pulltorefresh_text_color">@color/h</color>
+    <!--<color name="pulltorefresh_text_color">#FF999999</color>-->
+    <color name="pulltorefresh_news_text_color">#FFaaaaaa</color>
+    <color name="color_light_blue">#553d82f7</color>
+    <color name="color_main_blue">#3d82f7</color>
+
+    <color name="a_alpha_10">#1916a7ba</color>
+    <color name="a_alpha_90">#e216a7ba</color>
+
+    <!--<color name="actionbar_bg">#495154</color>-->
+    <color name="actionbar_bg">#FFFFFFFF</color>
+    <color name="actionbar_bg_pressed">#aaaaaaaa</color>
+
+    <color name="white_alpha_10">#1affffff</color>
+    <color name="white_alpha_ee">#ddffffff</color>
+    <color name="black_line_gray">#2d2d2d</color>
+
+    <color name="loading_red">#f48e33</color>
+    <color name="loading_blue">#16a7ba</color>
+
+    <color name="line_gray">#d7d7d7</color>
+    <color name="gray">#ffd9d9d8</color>
+    <color name="default_backgroud">#ebebeb</color>
+    <color name="dialog_window_bg">#55000000</color>
+
+    <color name="comment_bg">#62c8fe</color>
+    <color name="green_light">#22ac38</color>
+
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="translucent">#99000000</color>
+    <color name="hint_transparent_color">#F7C7C3</color>
+    <color name="car_list_item_highlight">#d9d9d9</color>
+
+    <color name="navi_user_color">#292c32</color>
+    <color name="home_tip_color">#30303a</color>
+
+    <color name="bk_gray">#f1f1f1</color>
+    <color name="car_track_take_car">#419df9</color>
+    <color name="car_track_back_car">#ff5749</color>
+
+    <color name="red">#ff463c</color>
+    <color name="pay_gray_line">#d7d7d7</color>
+
+    <color name="home_color">#dcc783</color>
+    <color name="store_selected_color">#fffaf4</color>
+    <color name="personal_playrecord_clear_color">#ec6e0e</color>
+
+    <color name="load_result_text">#666666</color>
+
+    <color name="pic_detail_input_bg">#CC333333</color>
+    <color name="pic_detail_input_bg_transparent_80">#AA333333</color>
+
+    <color name="comment_send_btn_disable_color">#dddddd</color>
+    <color name="comment_send_btn_enable_color">@color/a</color>
+    <color name="comment_top_bar_title_color">#474747</color>
+
+    <color name="bg_item_normal_state">#fff0f0f0</color>
+    <color name="bg_item_dragging_state">#ffffdddd</color>
+    <color name="bg_item_dragging_active_state">#ffff9999</color>
+    <color name="bg_item_swiping_state">#ffddddff</color>
+    <color name="bg_item_swiping_active_state">#ff9999ff</color>
+</resources>

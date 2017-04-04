@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    style="@style/ToolbarStyle">
+
+    <RelativeLayout
+        android:id="@+id/ll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_left_button"
+            style="@style/TitleBarActionText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:drawableLeft="@drawable/img_title_back"
+            android:drawablePadding="3dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_page"
+            android:paddingRight="@dimen/margin_page"
+            android:text="返回" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/TitleBarText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tv_right_button"
+            style="@style/TitleBarActionText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:drawablePadding="3dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_page"
+            android:paddingRight="@dimen/margin_page"
+            tools:text="退出" />
+
+        <View
+            android:id="@+id/divider_toolbar_content"
+            style="@style/Line.Horizontal.Divider.Toolbar"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

@@ -1,0 +1,123 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+
+    <dimen name="tab_title_size">16sp</dimen>
+    <dimen name="view_setting_height">45dp</dimen>
+
+    <dimen name="A">24sp</dimen>
+    <dimen name="B">19sp</dimen>
+    <!--<dimen name="C">18sp</dimen>-->
+    <dimen name="C">16sp</dimen>
+    <dimen name="D">17sp</dimen>
+    <dimen name="E">16sp</dimen>
+    <dimen name="F">12sp</dimen>
+    <dimen name="G">12sp</dimen>
+    <dimen name="H">11sp</dimen>
+    <dimen name="I">10sp</dimen>
+
+    <dimen name="pic_item_title_size">13sp</dimen>
+    <dimen name="comment_text_size">15sp</dimen>
+
+    <dimen name="view_line">1px</dimen>
+
+    <!--标题栏高度-->
+    <dimen name="title_bar_height">44dp</dimen>
+
+    <!--页面左右的margin-->
+    <dimen name="margin_page">15dp</dimen>
+
+    <dimen name="margin_page_mine">30dp</dimen>
+
+    <!--新闻条目的上下margin-->
+    <dimen name="margin_news_item">15dp</dimen>
+
+    <!--新闻条目的上下margin-->
+    <dimen name="margin_news_joke_item">11dp</dimen>
+
+    <!--新闻条目中各信息块的间隔-->
+    <dimen name="margin_news_item_block">10dp</dimen>
+
+    <!--新闻条目中多张图片时图片的间隔距离-->
+    <dimen name="margin_news_item_pic">3dp</dimen>
+
+    <dimen name="pic_detail_description_padding">6dp</dimen>
+
+    <!--新闻条目视频条目标题栏高度-->
+    <dimen name="video_title_shadow_height">60dp</dimen>
+
+    <!--评论中用户头像的尺寸-->
+    <dimen name="comment_head_image_size">38dp</dimen>
+
+    <dimen name="related_news_item_height">42dp</dimen>
+
+    <!-- 页面上标题栏左右点击按钮距离 -->
+    <dimen name="title_bar_side_range">15dp</dimen>
+    <dimen name="title_bar_otherside_range">15dp</dimen>
+    <dimen name="title_bar_top_range">14dp</dimen>
+    <dimen name="title_bar_bottom_range">14dp</dimen>
+
+    <dimen name="not_like_width">100dp</dimen>
+    <dimen name="not_like_height">33dp</dimen>
+
+
+    <dimen name="list_divider_height">15dp</dimen>
+    <dimen name="edit_height">48dp</dimen>
+    <dimen name="item_height">48dp</dimen>
+    <dimen name="item_my_height">49dp</dimen>
+    <dimen name="button_height">44dp</dimen>
+    <dimen name="tab_bar_height">49dp</dimen>
+    <dimen name="actionbar_height">44dp</dimen>
+    <dimen name="friend_item_height">55dp</dimen>
+    <dimen name="image_height_list_project_face">160dp</dimen>
+
+    <dimen name="list_item_avatar_size">34dp</dimen>
+
+    <dimen name="margin_view">15dp</dimen>
+
+    <dimen name="home_margin_page">10dp</dimen>
+
+    <dimen name="login_icon_margin">40dp</dimen>
+
+    <dimen name="refresh_listview_header_loading_height">52dp</dimen>
+    <dimen name="refresh_listview_header_max_height">157dp</dimen>
+    <dimen name="appointment_text_height">50dp</dimen>
+    <dimen name="appointment_margin">30dp</dimen>
+
+
+    <dimen name="big_black_btn_height">44dp</dimen>
+    <dimen name="row_content_height">50dp</dimen>
+    <dimen name="row_content_title_min_width">100dp</dimen>
+
+    <dimen name="home_butler_height">155dp</dimen>
+    <dimen name="home_service_translate_y_delta">40dp</dimen>
+    <dimen name="home_butler_translate_y_delta">20dp</dimen>
+    <dimen name="home_butler_page_margin">10dp</dimen>
+    <dimen name="list_view_header_height">22dp</dimen>
+
+    <dimen name="time_picker_height">185dp</dimen>
+
+    <dimen name="collect_item_width">113dp</dimen>
+    <dimen name="collect_item_height">74dp</dimen>
+
+    <dimen name="relate_pic_grid_item_margin_top">33dp</dimen>
+    <dimen name="relate_pic_grid_item_margin">10dp</dimen>
+    <dimen name="pic_series_pic_margin_top">5dp</dimen>
+    <dimen name="collect_list_item_padding_top">10dp</dimen>
+    <dimen name="collect_list_item_padding_bottom">10dp</dimen>
+
+    <dimen name="share_item_radius_corner">40dp</dimen>
+    <dimen name="login_tip_text_margin">17dp</dimen>
+    <dimen name="share_grid_padding_left_right">12dp</dimen>
+    <dimen name="gap_title_tip">82dp</dimen>
+
+    <dimen name="linepaddingbutton">0dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+</resources>

@@ -1,4 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+    jdk getJava8HomeDir()
+    oldJdk System.getenv("JAVA6_HOME")
+    defaultMethods true
+    incremental true
+}
 
 android {
     compileSdkVersion 24
@@ -17,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -24,11 +36,30 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.squareup.okhttp:okhttp:2.7.0'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'io.reactivex:rxjava:1.1.3'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'cn.carbs.android:AutoZoomInImageView:1.0.0'
     testCompile 'junit:junit:4.12'
 }
+
+def getJava8HomeDir() {
+    String envValue = System.getenv("JAVA8_HOME");
+    if (envValue != null) {
+        return envValue;
+    }
+
+    String rootDir = project.rootDir
+    File localProperties = new File(rootDir, "local.properties")
+    Properties properties = new Properties()
+    localProperties.withInputStream { instr ->
+        properties.load(instr)
+    }
+    return properties.getProperty('JAVA8_HOME')
+}
+

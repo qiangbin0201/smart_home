@@ -11,9 +11,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
-import com.smart.home.utils.AppLogUtils;
-import com.smart.home.utils.FileUtils;
-import com.smart.home.utils.SntpClock;
 
 import java.io.File;
 import java.util.Timer;
@@ -130,8 +127,7 @@ public class TTYCApplication extends Application {
 //////                .setRequestListeners(requestListeners)
 //////                .setSmallImageDiskCacheConfig(smallImageDiskCacheConfig)
 ////                .build();
-////        ImagePipelineConfig config = FrescoUtils.getDefaultImagePipelineConfig(this);
-////        Fresco.initialize(this, config);
+////        Fresco.initialize(this, confi);
 //
 ////        if (BuildConfig.DEBUG) {
 ////            // for fresco loading log

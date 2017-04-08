@@ -23,15 +23,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.smart.home.activity.HomeActivity;
-import com.smart.home.utils.ActivityStack;
-import com.smart.home.utils.AppLogUtils;
-import com.smart.home.utils.BackgroundUtils;
-import com.smart.home.utils.ProgressDialogUtil;
-import com.smart.home.utils.ToastUtil;
-import com.smart.home.utils.Utils;
-import com.smart.home.utils.ua.UserAction;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +50,6 @@ import rx.Subscription;
  * 3、增加对嵌套fragment进行{@code startActivityForResult}时无法在{@code onActivityResult}中接收到返回结果
  * 的系统bug处理
  * <p>
- * 4、其他公用方法的支持，如{@link #showLoadingDialog(String, boolean)}、{@link #showToast(String)}、
  * {@link #attachFragment}等等的方法支持
  * <p>
  * 5、实现了ViewGroupVO接口，增加对视图绑定的支持
@@ -72,7 +62,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private List<Subscription> mSubscriptions = new ArrayList<>();
     //等待对话框
-    private ProgressDialogUtil mLoadingDialog;
+//    private ProgressDialogUtil mLoadingDialog;
     //进行startActivityForResult的fragment
     private Fragment mInteractiveFragment;
 
@@ -101,7 +91,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBaseActivity = this;
-        AppLogUtils.i(getLocalClassName() + " onCreate");
 
         //初始化布局主容器
         initContainer();
@@ -109,7 +98,6 @@ public class BaseActivity extends AppCompatActivity {
         initIntentTitle();
         //去掉actionbar下的阴影
         initActionBarShadow();
-        ActivityStack.addActivity(this);
     }
 
 
@@ -326,59 +314,44 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        AppLogUtils.i(getLocalClassName() + " onSaveInstanceState");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        AppLogUtils.i(getLocalClassName() + " onRestoreInstanceState");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        UserAction.getInstance(this).getUserAction().uaOnPause(this);
-        AppLogUtils.i(getLocalClassName() + " onPause");
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        UserAction.getInstance(this).getUserAction().uaOnResume(this);
-        // hideKeyboard();
-        AppLogUtils.i(getLocalClassName() + " onResume");
 
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        AppLogUtils.i(getLocalClassName() + " onReStart");
     }
 
     @Override
     protected void onStart() {
-        AppLogUtils.i(getLocalClassName() + " onStart");
-        BackgroundUtils.getInstance().dealAppRunState("", true);
         super.onStart();
     }
 
     @Override
     protected void onStop() {
-        AppLogUtils.i(getLocalClassName() + " onStop");
-        BackgroundUtils.getInstance().dealAppRunState();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        AppLogUtils.i(getLocalClassName() + " onDestroy");
-        ToastUtil.clear();
         clearSubscriptions();
-        dismissLoadingDialog();
-        ActivityStack.deleteActivity(this);
+//        dismissLoadingDialog();
 //        ShareManager.getInstance().onDestroy();
         mBaseActivity = null;
         super.onDestroy();
@@ -451,30 +424,23 @@ public class BaseActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * 获取mLoadingDialog
-     */
-    public ProgressDialogUtil getProgressDialog() {
-        return mLoadingDialog;
-    }
 
     /**
      * 获取 点击焦点外可消失的等待框
      */
     public void showLoadingDialog(String message, boolean cancelable, boolean cancelableOutside) {
-        dismissLoadingDialog();
         if (this.isFinishing()) return;
 
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new ProgressDialogUtil(this);
-        }
-
-        mLoadingDialog.show(message, cancelable, cancelableOutside, new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                onLoadingDialogCanceled();
-            }
-        });
+//        if (mLoadingDialog == null) {
+//            mLoadingDialog = new ProgressDialogUtil(this);
+//        }
+//
+//        mLoadingDialog.show(message, cancelable, cancelableOutside, new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                onLoadingDialogCanceled();
+//            }
+//        });
     }
 
     /**
@@ -484,7 +450,6 @@ public class BaseActivity extends AppCompatActivity {
      * @param cancelable
      */
     public void showLoadingDialog(String message, boolean cancelable) {
-        ToastUtil.cancelToast();
         showLoadingDialog(message, cancelable, false);
 //        dismissLoadingDialog();
 //        if (mLoadingDialog == null) {
@@ -497,32 +462,26 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 隐藏等待框
      */
-    public void dismissLoadingDialog() {
-        if (mLoadingDialog != null) {
-            mLoadingDialog.hide();
-            mLoadingDialog = null;
-        }
-    }
+//    public void dismissLoadingDialog() {
+//        if (mLoadingDialog != null) {
+//          //  mLoadingDialog.hide();
+//            mLoadingDialog = null;
+//        }
+//    }
 
     /**
      * 当等待框取消时的处理方法
      */
-    protected void onLoadingDialogCanceled() {
-        mLoadingDialog = null;
-    }
+//    protected void onLoadingDialogCanceled() {
+//        mLoadingDialog = null;
+//    }
 
-    public void showToast(int resId) {
-        showToast(getString(resId));
-    }
 
     /**
      * 以toast形式显示消息
      *
      * @param message
      */
-    public void showToast(String message) {
-        ToastUtil.show(this, message);
-    }
 
 
     /**
@@ -549,16 +508,10 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 隐藏软键盘
      */
-    public void hideKeyboard() {
-        Utils.hideKeyboard(this);
-    }
 
     /**
      * 显示软键盘
      */
-    public void showKeyboard(EditText editText) {
-        Utils.showKeyboard(this, editText);
-    }
 
 
 
@@ -567,9 +520,6 @@ public class BaseActivity extends AppCompatActivity {
      *
      * @return
      */
-    public boolean isOnForeground() {
-        return ActivityStack.getCurrentActivity() == this;
-    }
 
 
 }

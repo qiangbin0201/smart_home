@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <cn.carbs.android.library.AutoZoomInImageView
-        android:id="@+id/splash_iamgeview"
+    android:layout_height="match_parent"
+    android:background="@color/bg_app">
+    <FrameLayout
+        android:id="@+id/ContentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/test"/>
-
-
+        android:layout_weight="1" />
 
 </LinearLayout>

@@ -23,6 +23,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.smart.home.model.WeakRefHandler;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,8 @@ import rx.Subscription;
  * 5、实现了ViewGroupVO接口，增加对视图绑定的支持
  */
 public class BaseActivity extends AppCompatActivity {
+
+    protected WeakRefHandler mWeakRefHandler;
     /**
      * 最小的点击延时时间，单位：毫秒
      */
@@ -98,6 +102,8 @@ public class BaseActivity extends AppCompatActivity {
         initIntentTitle();
         //去掉actionbar下的阴影
         initActionBarShadow();
+
+        mWeakRefHandler = new WeakRefHandler(this);
     }
 
 
@@ -354,6 +360,7 @@ public class BaseActivity extends AppCompatActivity {
 //        dismissLoadingDialog();
 //        ShareManager.getInstance().onDestroy();
         mBaseActivity = null;
+        mWeakRefHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 

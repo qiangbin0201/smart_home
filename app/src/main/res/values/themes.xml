@@ -1,0 +1,56 @@
+<resources>
+
+    <attr name="numberPickerStyle" format="reference" />
+
+    <declare-styleable name="NumberPicker">
+        <!-- @hide Color for the solid color background if such for optimized rendering. -->
+        <attr name="solidColor" format="color|reference" />
+        <!-- @hide The divider for making the selection business. -->
+        <attr name="selectionDivider" format="reference" />
+        <!-- @hide The height of the selection divider. -->
+        <attr name="selectionDividerHeight" format="dimension" />
+        <!-- @hide The distance between the two selection dividers. -->
+        <attr name="selectionDividersDistance" format="dimension" />
+        <!-- @hide The min height of the NumberPicker. -->
+        <attr name="internalMinHeight" format="dimension" />
+        <!-- @hide The max height of the NumberPicker. -->
+        <attr name="internalMaxHeight" format="dimension" />
+        <!-- @hide The min width of the NumberPicker. -->
+        <attr name="internalMinWidth" format="dimension" />
+        <!-- @hide The max width of the NumberPicker. -->
+        <attr name="internalMaxWidth" format="dimension" />
+        <!-- @hide The layout of the number picker. -->
+        <attr name="internalLayout" format="reference" />
+        <!-- @hide The drawable for pressed virtual (increment/decrement) buttons. -->
+        <attr name="virtualButtonPressedDrawable" format="reference" />
+    </declare-styleable>
+
+    <style name="NPWidget">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:height">@dimen/actionbar_height</item>
+        <item name="android:textAppearance">@style/TextAppearance</item>
+    </style>
+
+    <style name="TextAppearance">
+        <item name="android:textSize">@dimen/B</item>
+        <item name="android:textColor">@color/b</item>
+    </style>
+
+    <style name="NPWidget.NumberPicker">
+        <item name="android:orientation">vertical</item>
+        <item name="android:fadingEdge">vertical</item>
+        <item name="android:fadingEdgeLength">50dip</item>
+    </style>
+
+    <declare-styleable name="MineItem">
+        <attr name="titleD" format="string|reference" />
+        <attr name="editD" format="string|reference" />
+        <attr name="titleColor" format="color|reference" />
+        <attr name="leftIcon" format="reference" />
+        <attr name="hasMore" format="boolean" />
+        <attr name="showRightImg" format="boolean" />
+        <attr name="showRightText" format="boolean" />
+        <!--    <attr name="editable" format="boolean" /> -->
+    </declare-styleable>
+
+</resources>

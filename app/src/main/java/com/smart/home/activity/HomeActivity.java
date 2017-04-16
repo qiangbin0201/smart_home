@@ -5,11 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.smart.home.R;
+import com.smart.home.fragment.HomeFragment;
+import com.smart.home.fragment.SettingFragment;
 import com.smart.home.model.WeakRefHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lenovo on 2017/4/4.
@@ -18,6 +25,10 @@ import com.smart.home.model.WeakRefHandler;
 public class HomeActivity extends BaseActivity {
 
     protected WeakRefHandler mWeakRefHandler;
+
+    private int mCurrentFragmentIndex = 0;
+
+    private List<Fragment> fragments = new ArrayList<Fragment>();
 
     public static void launch(Activity context){
         Intent intent = new Intent(context, HomeActivity.class);
@@ -53,6 +64,77 @@ public class HomeActivity extends BaseActivity {
                 }
             }, 3000);
         }
+    }
+
+    private void initFragment(){
+        fragments.add(HomeFragment.newInstance());
+        fragments.add(SettingFragment.newInstance());
+        showTab(0);
+
+    }
+
+
+    /**
+     * 处理菜单选择
+     *
+     * @param index
+     */
+    public boolean showTab(int index) {
+        Fragment fragment = getFragment(index);
+        //拦截选择事件
+
+        mCurrentFragmentIndex = index;
+        if (fragment != null) {
+            addFragment(fragment);
+            showFragment(fragment);
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private void addFragment(Fragment fragment) {
+        if (!fragment.isAdded()) {
+            FragmentTransaction ft = getFragmentTransaction();
+            ft.add(R.id.ContentFrame, fragment);
+            ft.commitAllowingStateLoss();
+        }
+    }
+
+
+    private void showFragment(Fragment fragment) {
+        FragmentTransaction ft = getFragmentTransaction();
+        for (int i = 0; i < fragments.size(); i++) {
+            Fragment f = fragments.get(i);
+            if (f == fragment) {
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.setCustomAnimations(R.anim.push_left_in, R.anim.push_still);
+                ft.show(f);
+            } else {
+                ft.hide(f);
+            }
+        }
+
+        ft.commitAllowingStateLoss();
+    }
+
+    /**
+            * 获取当前正在显示的Fragment
+    *
+            * @param index
+    * @return
+            */
+    public Fragment getFragment(int index) {
+        if (index < 0 || index > fragments.size() - 1) {
+            return null;
+        }
+        return fragments.get(index);
+    }
+
+
+    private FragmentTransaction getFragmentTransaction() {
+        return this.getSupportFragmentManager().beginTransaction();
     }
 
 

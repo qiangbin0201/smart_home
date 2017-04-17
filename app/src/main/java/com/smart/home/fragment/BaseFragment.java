@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 
+import com.smart.home.View.ViewStateHandler;
 import com.smart.home.activity.BaseActivity;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class BaseFragment extends Fragment {
 
     private Vector<Runnable> mDeferredRunnables = new Vector<>();
     protected View mView;
+
+    private ViewStateHandler mViewStateHandler;
 
     public BaseActivity getBaseActivity() {
         if (mActivity == null) {
@@ -72,6 +75,7 @@ public class BaseFragment extends Fragment {
         container.addView(view, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+        getViewStateHandler().setContainerView(container);
         return container;
     }
 
@@ -154,6 +158,17 @@ public class BaseFragment extends Fragment {
         } else {
             mDeferredRunnables.add(r);
         }
+    }
+
+    public ViewStateHandler getViewStateHandler() {
+        if (mViewStateHandler == null) {
+            mViewStateHandler = createViewStateHandler();
+        }
+        return mViewStateHandler;
+    }
+
+    protected ViewStateHandler createViewStateHandler() {
+        return new ViewStateHandler(getActivity());
     }
 
     /**

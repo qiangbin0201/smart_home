@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/view_setting_height"
+    android:layout_height="45dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/tab_title_size"

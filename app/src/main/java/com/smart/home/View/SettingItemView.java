@@ -12,14 +12,17 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.smart.home.R;
+import com.smart.home.utils.ViewUtils;
 
 /**
- * Created by lenovo on 2017/4/16.
+ * Created by lenovo on 2017/4/17.
  */
 
 public class SettingItemView extends FrameLayout {
+
     private Context mContext;
     // item的标题
     private String title;
@@ -42,6 +45,7 @@ public class SettingItemView extends FrameLayout {
     private String editTitle;
     private View mVNotify;
 
+
     public SettingItemView(Context context) {
         super(context);
         this.mContext = context;
@@ -49,6 +53,7 @@ public class SettingItemView extends FrameLayout {
 
     public SettingItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         Resources res = getResources();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.MineItem);
@@ -81,6 +86,7 @@ public class SettingItemView extends FrameLayout {
 
         a.recycle();
         initView();
+
     }
 
     private void initView() {
@@ -131,6 +137,7 @@ public class SettingItemView extends FrameLayout {
 
     }
 
+
     public void setUserImg(String url) {
         if (TextUtils.isEmpty(url) || userImg.getVisibility() != VISIBLE) {
             return;
@@ -160,5 +167,12 @@ public class SettingItemView extends FrameLayout {
         tv_title.setText(title);
     }
 
-
+    /**
+     * 显示或隐藏提醒标识点
+     *
+     * @param visible
+     */
+    public void showNotify(boolean visible) {
+        ViewUtils.showView(mVNotify, visible);
+    }
 }

@@ -3,14 +3,19 @@ package com.smart.home.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.smart.home.R;
+import com.smart.home.fragment.BaseFragment;
 import com.smart.home.fragment.HomeFragment;
 import com.smart.home.fragment.SettingFragment;
 import com.smart.home.model.WeakRefHandler;
@@ -41,6 +46,7 @@ public class HomeActivity extends BaseActivity {
 //        smoothSwitchScreen();
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
         setContentView(R.layout.activity_hone);
+        initFragment();
 
     }
 
@@ -135,6 +141,47 @@ public class HomeActivity extends BaseActivity {
 
     private FragmentTransaction getFragmentTransaction() {
         return this.getSupportFragmentManager().beginTransaction();
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_BACK == keyCode) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                return true;
+            }
+
+            Fragment fragment = fragments.get(mCurrentFragmentIndex);
+            if (fragment instanceof BaseFragment) {
+                boolean tag = ((BaseFragment) fragment).onBackPressed();
+                if (tag) {
+                    return tag;
+                }
+            }
+
+            //退出程序
+            exit();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private boolean mPendingExit = false;
+
+    private void exit() {
+        if (mPendingExit) {
+            finish();
+        } else {
+            mPendingExit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPendingExit = false;
+                }
+            }, 2000);
+        }
     }
 
 

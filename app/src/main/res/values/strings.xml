@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Smart_home</string>
+    <string name="app_name">智能家居</string>
+    <string name="person_text_feedback">意见反馈</string>
+    <string name="person_text_current_version">当前版本</string>
 </resources>

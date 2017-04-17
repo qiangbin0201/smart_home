@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smart.home.R;
+import com.smart.home.activity.HomeActivity;
 
 /**
  * Created by lenovo on 2017/4/16.
@@ -29,5 +30,15 @@ public class SettingFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+
+    @Override
+    public boolean onBackPressed() {
+        if(isAdded()){
+            ((HomeActivity) getActivity()).showTab(0);
+            return true;
+        }
+        return super.onBackPressed();
     }
 }

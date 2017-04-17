@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-
-    <ImageView
-
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/setting_view"
-        android:layout_gravity="center"
-        android:id="@+id/imageView"
-        android:layout_marginTop="80dp"/>
-
-    <com.smart.home.View.SettingItemView
-
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:leftIcon = "@drawable/version"
-        android:layout_marginTop="80dp"
-        app:titleD="当前版本">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/setting_view"
+            android:layout_gravity="center"
+            android:id="@+id/imageView"
+            android:layout_marginTop="80dp"/>
 
-    </com.smart.home.View.SettingItemView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/divider_line"/>
-    <com.smart.home.View.SettingItemView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:leftIcon="@drawable/feedback"
-        app:titleD="意见反馈"
-        >
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_version"
+            android:visibility="visible"
 
-    </com.smart.home.View.SettingItemView>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:leftIcon = "@drawable/version"
+            android:layout_marginTop="80dp"
+            app:titleD="@string/person_text_current_version">
 
-</LinearLayout>
+        </com.smart.home.View.SettingItemView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/divider_line"/>
+
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:leftIcon="@drawable/feedback"
+            app:titleD="@string/person_text_feedback"
+            >
+
+        </com.smart.home.View.SettingItemView>
+
+    </LinearLayout>
+
+
+
+</ScrollView>

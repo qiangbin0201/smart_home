@@ -3,6 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+
+
     <LinearLayout
         android:id="@+id/ll_menu"
         android:layout_width="match_parent"
@@ -33,6 +35,7 @@
             android:gravity="center"
             />
 
+
         <ImageView
             android:id="@+id/iv_setting"
             android:layout_width="wrap_content"
@@ -42,12 +45,57 @@
             android:scaleType="centerInside"
             android:src="@drawable/setting" />
     </LinearLayout>
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_below="@+id/ll_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/rb_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:gravity="center"
+            android:focusable="true"
+            android:text="wifi"
+            android:textColor="@color/black"
+            android:drawableTop="@android:drawable/btn_radio"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/rb_server"
+            android:button="@null"
+            android:text="远程"
+            android:focusable="true"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:drawableTop="@android:drawable/btn_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rb_infrared"
+            android:button="@null"
+            android:text="红外"
+            android:focusable="true"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:drawableTop="@android:drawable/btn_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RadioGroup>
     <LinearLayout
         android:id="@+id/ll_content1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_menu"
-        android:layout_marginTop="100dp">
+        android:layout_below="@+id/radio_group"
+        android:layout_marginTop="50dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

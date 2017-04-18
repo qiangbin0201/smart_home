@@ -44,12 +44,7 @@
 
     <declare-styleable name="MineItem">
         <attr name="titleD" format="string|reference" />
-        <attr name="editD" format="string|reference" />
-        <attr name="titleColor" format="color|reference" />
         <attr name="leftIcon" format="reference" />
-        <attr name="hasMore" format="boolean" />
-        <attr name="showRightImg" format="boolean" />
-        <attr name="showRightText" format="boolean" />
         <!--    <attr name="editable" format="boolean" /> -->
     </declare-styleable>
 

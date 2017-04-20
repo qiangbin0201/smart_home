@@ -45,6 +45,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/setting" />
     </LinearLayout>
+
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_below="@+id/ll_menu"
@@ -182,7 +183,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

@@ -25,6 +25,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppHomeTheme"
             android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".activity.BulbControlActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppHomeTheme"/>
     </application>
 
 

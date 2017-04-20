@@ -53,20 +53,22 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('build/intermediates/exploded-aar/retrofit-mock-1.9.0.jar')
     compile files('build/intermediates/exploded-aar/retrofit-1.9.0.jar')
+    compile files('D:/SmartHome/build/generated/retrofit-1.9.0.jar')
+    compile files('D:/SmartHome/build/generated/retrofit-mock-1.9.0.jar')
 }
 
-def getJava8HomeDir() {
-    String envValue = System.getenv("JAVA8_HOME");
-    if (envValue != null) {
-        return envValue;
-    }
+    def getJava8HomeDir() {
+        String envValue = System.getenv("JAVA8_HOME");
+        if (envValue != null) {
+            return envValue;
+        }
 
-    String rootDir = project.rootDir
-    File localProperties = new File(rootDir, "local.properties")
-    Properties properties = new Properties()
-    localProperties.withInputStream { instr ->
-        properties.load(instr)
-    }
-    return properties.getProperty('JAVA8_HOME')
+        String rootDir = project.rootDir
+        File localProperties = new File(rootDir, "local.properties")
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        return properties.getProperty('JAVA8_HOME')
 }
 

@@ -33,11 +33,7 @@ public class HomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    String[] arr = { "孙悟空", "猪八戒", "唐僧" };
-
     private RadioGroup mRadioGroup;
-
-    private Spinner mSpinner;
 
     private RadioButton rbWifi, rbServer, rbInfrared;
 
@@ -53,14 +49,6 @@ public class HomeFragment extends BaseFragment {
     ImageView ivAirContidion;
     @BindView(R.id.iv_fan)
     ImageView ivFan;
-//    @BindView(R.id.rb_wifi)
-//    RadioButton rbFan;
-//    @BindView(R.id.rb_server)
-//    RadioButton rbServer;
-//    @BindView(R.id.rb_infrared)
-//    RadioButton rbInfrared;
-
-
 
 
     public static HomeFragment newInstance(){
@@ -80,14 +68,13 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home,container, false);
         unbinder = ButterKnife.bind(this,mView);
-        initView(mView);
         return mView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        initView(mView);
     }
 
     private void initView(View view) {
@@ -123,15 +110,6 @@ public class HomeFragment extends BaseFragment {
     @OnClick({R.id.iv_explain, R.id.iv_setting, R.id.iv_bulb, R.id.iv_air_condition, R.id.iv_tv, R.id.iv_fan})
     public void OnClick(View view){
         switch (view.getId()){
-            case R.id.rb_infrared:
-                Toast.makeText(getActivity(), "局域网", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.rb_server:
-                Toast.makeText(getActivity(), "红外", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.rb_wifi:
-                Toast.makeText(getActivity(), "服务器", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.iv_explain:
                 break;
             case R.id.iv_bulb:
@@ -143,39 +121,7 @@ public class HomeFragment extends BaseFragment {
         }
 
     }
-//    @OnCheckedChanged({R.id.rb_infrared, R.id.rb_server, R.id.rb_wifi})
-//    public void OnCheckedChanged(RadioButton buttonView, boolean isChecked){
-//        switch (buttonView.getId()){
-//            case R.id.rb_infrared:
-//                Toast.makeText(getActivity(), "局域网", Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.rb_server:
-//                Toast.makeText(getActivity(), "红外", Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.rb_wifi:
-//                Toast.makeText(getActivity(), "服务器", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//    }
 
-
-    private RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-            switch (checkedId) {
-                case R.id.rb_wifi:
-                    Toast.makeText(getActivity(), "one", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.rb_infrared:
-                    Toast.makeText(getActivity(), "two", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.rb_server:
-                    Toast.makeText(getActivity(), "three", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-
-        }
-    };
 
     @Override
     public void onDestroyView() {

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import android.view.*;
 
 import com.smart.home.R;
+import com.smart.home.model.ToolbarStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class BulbControlActivity extends BaseActivity {
 
+    private static final String TOOLBAR_TITLE = "电灯";
 
     public static void Launch(Context context) {
         Intent intent = new Intent(context, BulbControlActivity.class);
@@ -38,26 +40,9 @@ public class BulbControlActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
+        setToolbar(ToolbarStyle.RETURN_TITLE, TOOLBAR_TITLE);
         setContentView(R.layout.activity_bulb);
     }
 }
 
-
-
-//        @Override
-//        public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-//            switch (checkedId){
-//                case R.id.rb_infrared:
-//                    Toast.makeText(getApplication(), "one", Toast.LENGTH_SHORT).show();
-//                    break;
-//                case R.id.rb_server:
-//                    Toast.makeText(getApplication(), "two", Toast.LENGTH_SHORT).show();
-//                    break;
-//                case R.id.rb_wifi:
-//                    Toast.makeText(getApplication(), "three", Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//
-//        }
-//    };
 

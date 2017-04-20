@@ -4,7 +4,6 @@ package com.smart.home.activity;
  * Created by lenovo on 2017/4/4.
  */
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,14 +15,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.smart.home.R;
+import com.smart.home.model.ToolbarFactory;
+import com.smart.home.model.ToolbarStyle;
+import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -422,6 +424,82 @@ public class BaseActivity extends AppCompatActivity {
 //                onLoadingDialogCanceled();
 //            }
 //        });
+    }
+
+    /**
+     * 根据预置的样式设置toolbar，标题从{@link #getTitle()}中获取，必须在{@link #setContentView}之前调用，否则会报错
+     *
+     * @param style toolbar样式
+     */
+    public void setToolbar(ToolbarStyle style) {
+        setToolbar(style, getTitle());
+    }
+
+    /**
+     * 根据预置的样式设置toolbar，必须在{@link #setContentView}之前调用，否则会报错
+     *
+     * @param style toolbar样式
+     * @param title 标题文字
+     */
+    public void setToolbar(ToolbarStyle style, CharSequence title) {
+        setToolbar(style, title, 0, null);
+    }
+
+    /**
+     * 根据预置的样式设置toolbar，必须在{@link #setContentView}之前调用，否则会报错
+     *
+     * @param style                    toolbar样式
+     * @param title                    标题文字
+     * @param rightButtonIconId        如果样式设置存在右边按钮图标，则该参数为右边按钮图标的资源ID，否则无效
+     * @param rightButtonClickListener 如果样式设置存在右边按钮，则该参数为右边按钮点击回调接口，否则无效
+     */
+    public void setToolbar(ToolbarStyle style, CharSequence title, int rightButtonIconId,
+                           View.OnClickListener rightButtonClickListener) {
+        ToolbarWrapper toolbarWrapper = ToolbarFactory.createToolbar(this, style, title, rightButtonIconId, rightButtonClickListener);
+        setToolbar(toolbarWrapper);
+    }
+
+    /**
+     * 根据预置的样式设置toolbar，必须在{@link #setContentView}之前调用，否则会报错
+     *
+     * @param style                    toolbar样式
+     * @param title                    标题文字
+     * @param rightButtonText          如果样式设置存在右边按钮，则该参数为右边按钮文本，否则无效
+     * @param rightButtonClickListener 如果样式设置存在右边按钮，则该参数为右边按钮点击回调接口，否则无效
+     */
+    public void setToolbar(ToolbarStyle style, CharSequence title, CharSequence rightButtonText,
+                           View.OnClickListener rightButtonClickListener) {
+//        ToolbarWrapper toolbarWrapper = ToolbarFactory.createToolbar(this, style, title, rightButtonText, rightButtonClickListener);
+//        setToolbar(toolbarWrapper);
+        ToolbarWrapper toolbarWrapper = ToolbarFactory.createToolbar(this, style, title, rightButtonText, rightButtonClickListener);
+        setToolbar(toolbarWrapper);
+    }
+
+    /**
+     * 设置toolbar，必须在{@link #setContentView}之前调用，否则会报错
+     *
+     * @param toolbarWrapper
+     */
+    public void setToolbar(ToolbarWrapper toolbarWrapper) {
+        if (mIsSetContentView) {
+            throw new UnsupportedOperationException("setToolbar方法必须在setContentView之前调用！");
+        }
+        mToolbarWrapper = toolbarWrapper;
+        if (toolbarWrapper != null) {//隐藏系统的actionbar
+            mLayoutContainer.addView(mToolbarWrapper.getToolbar(),
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            getResources().getDimensionPixelSize(R.dimen.actionbar_height)));
+            setSupportActionBar(mToolbarWrapper.getToolbar());
+            //设置不显示系统的title，需放在setSupportActionBar之后才有效果
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideKeyboard() {
+        Utils.hideKeyboard(this);
     }
 
 

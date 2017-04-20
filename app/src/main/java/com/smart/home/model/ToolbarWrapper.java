@@ -1,4 +1,4 @@
-package com.smart.home.activity;
+package com.smart.home.model;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

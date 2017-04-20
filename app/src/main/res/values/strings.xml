@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">智能家居</string>
+    <string name="app_name_logo">Smart</string>
     <string name="person_text_feedback">意见反馈</string>
     <string name="person_text_current_version">当前版本</string>
+    <string name="back">返回</string>
+    <string name="app_splash_text">Copyright © 2017 Smart All Rights Reserved\nPowered by technology1303</string>
 </resources>

@@ -22,8 +22,6 @@ public class SettingItemView extends FrameLayout {
     private Context mContext;
     // item的标题
     private String title;
-    // 是否显示后面的箭头
-    private boolean hasMore = true;
     // item的左右两边的imageview
     private ImageView img_left;
     // 标题textview

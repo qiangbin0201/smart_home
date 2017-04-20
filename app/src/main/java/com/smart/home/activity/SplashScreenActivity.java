@@ -1,6 +1,5 @@
 package com.smart.home.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,13 +14,12 @@ import cn.carbs.android.library.AutoZoomInImageView;
 public class SplashScreenActivity extends BaseActivity {
 
     private AutoZoomInImageView mSplashImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initSplashView();
-
-
 
     }
 

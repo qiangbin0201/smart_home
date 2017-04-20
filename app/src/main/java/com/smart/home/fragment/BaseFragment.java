@@ -6,11 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 
-import com.smart.home.View.ViewStateHandler;
 import com.smart.home.activity.BaseActivity;
 
 import java.util.ArrayList;
@@ -29,7 +26,6 @@ public class BaseFragment extends Fragment {
     private Vector<Runnable> mDeferredRunnables = new Vector<>();
     protected View mView;
 
-    private ViewStateHandler mViewStateHandler;
 
     public BaseActivity getBaseActivity() {
         if (mActivity == null) {
@@ -64,20 +60,7 @@ public class BaseFragment extends Fragment {
         executeDeferred();
     }
 
-    /**
-     * 创建视图状态容器
-     *
-     * @param view
-     * @return
-     */
-    public View onCreateViewStateContainer(View view) {
-        FrameLayout container = new FrameLayout(getActivity());
-        container.addView(view, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        getViewStateHandler().setContainerView(container);
-        return container;
-    }
+
 
 
     /**
@@ -147,29 +130,6 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    /**
-     * 对于某些操作，如果fragment的视图还未创建，则会报错，使用该方法会把操作延迟到视图创建后
-     *
-     * @param r
-     */
-    public final void safeExecute(Runnable r) {
-        if (this.isVisible()) {
-            r.run();
-        } else {
-            mDeferredRunnables.add(r);
-        }
-    }
-
-    public ViewStateHandler getViewStateHandler() {
-        if (mViewStateHandler == null) {
-            mViewStateHandler = createViewStateHandler();
-        }
-        return mViewStateHandler;
-    }
-
-    protected ViewStateHandler createViewStateHandler() {
-        return new ViewStateHandler(getActivity());
-    }
 
     /**
      * 唤醒fragment，不同于{@link #onResume()},它是fragment处于可见状态下调用的
@@ -197,10 +157,6 @@ public class BaseFragment extends Fragment {
         mSubscriptions.clear();
     }
 
-    protected void showLoadingDialog(String message, boolean cancelable) {
-        if (mActivity != null)
-            mActivity.showLoadingDialog(message, cancelable);
-    }
 
 
 

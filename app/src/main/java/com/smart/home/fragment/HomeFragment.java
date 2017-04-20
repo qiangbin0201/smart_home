@@ -112,7 +112,6 @@ public class HomeFragment extends BaseFragment {
             case R.id.iv_setting:
                 ((HomeActivity) getActivity()).showTab(1);
                 break;
-
         }
 
     }

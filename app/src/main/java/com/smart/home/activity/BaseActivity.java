@@ -66,8 +66,6 @@ public class BaseActivity extends AppCompatActivity {
 
     private List<Subscription> mSubscriptions = new ArrayList<>();
     //等待对话框
-//    private ProgressDialogUtil mLoadingDialog;
-    //进行startActivityForResult的fragment
     private Fragment mInteractiveFragment;
 
   
@@ -109,18 +107,6 @@ public class BaseActivity extends AppCompatActivity {
 
     private boolean mIsPageLoaded = true;
 
-    /**
-     * 判断界面是否加载完成，默认都是加载完成，只有webview和部分需要在加载完数据后才展示标题的activity重载返回false
-     *
-     * @return
-     */
-    public boolean isPageLoaded() {
-        return mIsPageLoaded;
-    }
-
-    public void setPageLoaded(boolean isPageLoaded) {
-        mIsPageLoaded = isPageLoaded;
-    }
 
 
 
@@ -157,26 +143,14 @@ public class BaseActivity extends AppCompatActivity {
         return v;
     }
 
-//    public SwipeBackLayout getSwipeBackLayout() {
-//        return this.mSwipeBackHandler.getSwipeBackLayout();
+
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        //hesc 2016.4.13 这种处理太霸道，把所有的touch事件都拦截了，导致很多触摸事件延迟，暂时先注掉
+//        //为了防止快速点击按钮，导致点击事件多次触发，这里判断两次点击的时间是否在合理范围，否则直接拦截touch事件分发
+//
+//        return super.dispatchTouchEvent(ev);
 //    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        //hesc 2016.4.13 这种处理太霸道，把所有的touch事件都拦截了，导致很多触摸事件延迟，暂时先注掉
-        //为了防止快速点击按钮，导致点击事件多次触发，这里判断两次点击的时间是否在合理范围，否则直接拦截touch事件分发
-//        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-//            long time = System.currentTimeMillis();
-//            long delta = time - mLastClickTime;
-//            if (delta < MIN_CLICK_DELAY_TIME) {
-//                return true;
-//            } else {
-//                mLastClickTime = time;
-//            }
-//        }
-
-        return super.dispatchTouchEvent(ev);
-    }
 
     /**
      * 去掉actionbar下的阴影
@@ -450,45 +424,8 @@ public class BaseActivity extends AppCompatActivity {
 //        });
     }
 
-    /**
-     * 显示等待框
-     *
-     * @param message
-     * @param cancelable
-     */
-    public void showLoadingDialog(String message, boolean cancelable) {
-        showLoadingDialog(message, cancelable, false);
-//        dismissLoadingDialog();
-//        if (mLoadingDialog == null) {
-//            mLoadingDialog = new ProgressDialogUtil(this);
-//        }
-//
-//        mLoadingDialog.onShow(message, cancelable, d -> onLoadingDialogCanceled());
-    }
-
-    /**
-     * 隐藏等待框
-     */
-//    public void dismissLoadingDialog() {
-//        if (mLoadingDialog != null) {
-//          //  mLoadingDialog.hide();
-//            mLoadingDialog = null;
-//        }
-//    }
-
-    /**
-     * 当等待框取消时的处理方法
-     */
-//    protected void onLoadingDialogCanceled() {
-//        mLoadingDialog = null;
-//    }
 
 
-    /**
-     * 以toast形式显示消息
-     *
-     * @param message
-     */
 
 
     /**
@@ -511,23 +448,6 @@ public class BaseActivity extends AppCompatActivity {
         fragmentTransaction.replace(containerViewId, fragment).commitAllowingStateLoss();
         return fragment;
     }
-
-    /**
-     * 隐藏软键盘
-     */
-
-    /**
-     * 显示软键盘
-     */
-
-
-
-    /**
-     * 当前activity是否处于前台
-     *
-     * @return
-     */
-
 
 }
 

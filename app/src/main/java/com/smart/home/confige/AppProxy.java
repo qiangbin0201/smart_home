@@ -4,10 +4,16 @@ import com.smart.home.http.IRestAdapter;
 import com.smart.home.http.RestAdapterFactory;
 
 /**
- * Created by lenovo on 2017/4/18.
+ * Created by qiangbin on 2017/4/18.
  */
 
 public class AppProxy {
+
+    private static AppProxy sInstance = new AppProxy();
+
+    public static AppProxy getInstance(){
+        return sInstance;
+    }
 
     private IRestAdapter mDataApiRestAdapter;
 

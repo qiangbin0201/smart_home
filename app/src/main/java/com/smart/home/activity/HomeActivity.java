@@ -51,27 +51,6 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-    private void smoothSwitchScreen() {
-        // 5.0以上修复了此bug
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ViewGroup rootView = ((ViewGroup) this.findViewById(android.R.id.content));
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            int statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-            rootView.setPadding(0, statusBarHeight, 0, 0);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-            //在指定时间后需要将padding恢复
-            mWeakRefHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rootView.setPadding(0, 0, 0, 0);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-                }
-            }, 3000);
-        }
-    }
-
     private void initFragment(){
         fragments.add(HomeFragment.newInstance());
         fragments.add(SettingFragment.newInstance());

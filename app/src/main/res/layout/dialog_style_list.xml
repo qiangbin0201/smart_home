@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_new_bg"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="标题"
+        android:textColor="@color/black"
+        android:textSize="@dimen/A" />
+
+    <View style="@style/Line.Horizontal.Divider" />
+
+    <ListView
+        android:id="@+id/dialog_list"
+        style="@style/ListViewWithDividerStyle" />
+</LinearLayout>

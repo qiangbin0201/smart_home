@@ -46,6 +46,12 @@
         <item name="android:textColor">@color/m</item>
     </style>
 
+    <style name="Line.Horizontal.Divider" parent="Line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/line_divider</item>
+    </style>
+
 
 
     <style name="TitleBarText">
@@ -63,10 +69,70 @@
         <item name="android:background">@color/f</item>
     </style>
 
+    <style name="ButtonText">
+        <item name="android:textColor">@color/a</item>
+        <item name="android:textSize">@dimen/B</item>
+    </style>
+
 
     <style name="Line.Horizontal.Divider.Toolbar" parent="Line">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1px</item>
         <item name="android:background">@color/divider_tool_bar</item>
     </style>
+
+    <style name="Line.Vertical.Divider" parent="Line">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/line_divider</item>
+    </style>
+
+
+
+    <style name="DialogButtonText">
+        <item name="android:textSize">@dimen/D</item>
+        <item name="android:textColor">@color/a</item>
+    </style>
+
+    <style name="DialogLoginTitleText">
+        <item name="android:textSize">@dimen/C</item>
+        <item name="android:textColor">@color/d</item>
+    </style>
+
+    <style name="DialogLoginContentText">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/e</item>
+    </style>
+
+    <style name="SettingFragmentLineView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/divider_line</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
+
+
+
+    <style name="CommonListView">
+        <item name="android:id">@id/list</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:listSelector">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:fadingEdge">none</item>
+    </style>
+
+    <style name="ListViewWithDividerStyle" parent="CommonListView">
+    <item name="android:cacheColorHint">@android:color/transparent</item>
+    <item name="android:listSelector">@android:color/transparent</item>
+    <item name="android:divider">@color/line_divider</item>
+    <item name="android:background">@android:color/transparent</item>
+    <item name="android:dividerHeight">1px</item>
+    <item name="android:fadingEdge">none</item>
+    </style>
+
 </resources>

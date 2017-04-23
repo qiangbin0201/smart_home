@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_white_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="25dp"
+    android:paddingLeft="@dimen/margin_view"
+    android:paddingRight="@dimen/margin_view"
+    android:paddingTop="25dp">
+
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/DialogLoginTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/message"
+        style="@style/DialogLoginContentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:includeFontPadding="false"
+        tools:text="登录后收藏,内容永不丢失" />
+
+
+</LinearLayout>

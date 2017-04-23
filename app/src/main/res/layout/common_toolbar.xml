@@ -23,14 +23,6 @@
             android:text="返回" />
 
         <TextView
-            android:id="@+id/tv_title"
-            style="@style/TitleBarText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="" />
-
-        <TextView
             android:id="@+id/tv_right_button"
             style="@style/TitleBarActionText"
             android:layout_width="wrap_content"
@@ -46,6 +38,17 @@
             android:id="@+id/divider_toolbar_content"
             style="@style/Line.Horizontal.Divider.Toolbar"
             android:layout_alignParentBottom="true" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/TitleBarText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=""
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

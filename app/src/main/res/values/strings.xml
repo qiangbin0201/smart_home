@@ -7,4 +7,19 @@
     <string name="app_splash_text">Copyright © 2017 Smart All Rights Reserved\nPowered by technology1303</string>
     <string name="edit_equip_text_hint">请编辑设备名称（如：卧室主灯）</string>
     <string name="textview_equip_text_hint">请点击二维码添加设备</string>
+    <string name="control_object_text">控制对象:</string>
+    <string name="please_add_equip">请先添加设备</string>
+
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+
+    <string name="pic_click_to_reload">点击重新加载</string>
+    <string name="pic_save">保存图片</string>
+    <string name="pic_share">分享图片</string>
+    <string name="go_login">登录</string>
+    <string name="login_out">确认退出</string>
+    <string name="loading">正在加载</string>
+    <string name="person_text_equip">我的设备</string>
+    <string name="delete">删除</string>
+    <string name="equip_manager_right">编辑</string>
 </resources>

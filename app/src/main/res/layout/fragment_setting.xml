@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_back"
             android:layout_width="wrap_content"
@@ -19,7 +20,7 @@
             android:drawablePadding="10dp"
             android:text="@string/back"
             android:textColor="@color/black"
-            android:textSize="@dimen/D"/>
+            android:textSize="@dimen/D" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -30,28 +31,44 @@
             android:src="@drawable/setting_view" />
 
         <com.smart.home.View.SettingItemView
-            android:id="@+id/view_feedback"
+            android:id="@+id/view_clear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:visibility="visible"
+            app:leftIcon="@drawable/clear_data"
+            app:titleD="清理设备信息">
+
+        </com.smart.home.View.SettingItemView>
+
+        <View style="@style/SettingFragmentLineView" />
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_equip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:leftIcon="@drawable/equip"
+            app:titleD="@string/person_text_equip"
+            >
+
+        </com.smart.home.View.SettingItemView>
+
+        <View style="@style/SettingFragmentLineView"/>
+
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
             app:leftIcon="@drawable/feedback"
             app:titleD="@string/person_text_feedback">
 
         </com.smart.home.View.SettingItemView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/divider_line" />
+        <View style="@style/SettingFragmentLineView" />
 
         <com.smart.home.View.SettingItemView
             android:id="@+id/view_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:leftIcon="@drawable/version"
             app:titleD="@string/person_text_current_version">
 

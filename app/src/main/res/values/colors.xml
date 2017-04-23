@@ -154,4 +154,11 @@
     <color name="bg_item_dragging_active_state">#ffff9999</color>
     <color name="bg_item_swiping_state">#ffddddff</color>
     <color name="bg_item_swiping_active_state">#ff9999ff</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#31acb4</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="navigationBarColor">#f46444</color>
+    <color name="colorPrimaryDarkTrans">#CCf57257</color>
 </resources>

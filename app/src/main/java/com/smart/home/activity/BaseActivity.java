@@ -21,11 +21,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.smart.home.R;
+import com.smart.home.confige.AppProxy;
 import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.utils.ActivityStack;
 import com.smart.home.utils.Utils;
+import com.squareup.otto.Bus;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -61,6 +64,8 @@ import rx.Subscription;
 public class BaseActivity extends AppCompatActivity {
 
     protected WeakRefHandler mWeakRefHandler;
+
+    public Bus mBus;
     /**
      * 最小的点击延时时间，单位：毫秒
      */
@@ -102,6 +107,11 @@ public class BaseActivity extends AppCompatActivity {
         initIntentTitle();
         //去掉actionbar下的阴影
         initActionBarShadow();
+
+        //初始化实例
+        initInstances();
+
+        ActivityStack.addActivity(this);
 
         mWeakRefHandler = new WeakRefHandler(this);
     }
@@ -239,6 +249,13 @@ public class BaseActivity extends AppCompatActivity {
     public void addContentView(View contentView, ViewGroup.LayoutParams params) {
         mLayoutContainer.addView(contentView, params);
         super.setContentView(mLayoutContainer, createMatchParentLayoutParams());
+    }
+
+    /**
+     * 初始化实例
+     */
+    private void initInstances() {
+        mBus = AppProxy.getInstance().getBus();
     }
 
     /**

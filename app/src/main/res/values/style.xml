@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
     <style name="AppHomeTheme" parent="AppHomeTheme">
         <!--没有标题栏-->
         <item name="android:windowActionBar">false</item>
@@ -9,7 +16,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="WelcomeTheme" parent="AppHomeTheme">
+    <style name="WelcomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--设置背景透明-->
         <item name="android:windowIsTranslucent">true</item>
         <!--全屏-->
@@ -32,6 +39,11 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>-->
         <item name="contentInsetLeft">0dp</item>
         <item name="contentInsetStart">0dp</item>
+    </style>
+
+    <style name="ToastText">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/m</item>
     </style>
 
 

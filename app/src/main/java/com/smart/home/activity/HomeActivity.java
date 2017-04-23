@@ -19,6 +19,7 @@ import com.smart.home.fragment.BaseFragment;
 import com.smart.home.fragment.HomeFragment;
 import com.smart.home.fragment.SettingFragment;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +155,7 @@ public class HomeActivity extends BaseActivity {
             finish();
         } else {
             mPendingExit = true;
+            ToastUtil.showBottom(this, "再次点击退出应用");
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

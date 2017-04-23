@@ -2,6 +2,7 @@ package com.smart.home.confige;
 
 import com.smart.home.http.IRestAdapter;
 import com.smart.home.http.RestAdapterFactory;
+import com.squareup.otto.Bus;
 
 /**
  * Created by qiangbin on 2017/4/18.
@@ -23,6 +24,16 @@ public class AppProxy {
 
         }
         return mDataApiRestAdapter;
+    }
+
+    private Bus mBus;
+
+    public Bus getBus() {
+        if (mBus == null) {
+            mBus = new Bus();
+        }
+
+        return mBus;
     }
 
 

@@ -45,6 +45,15 @@
             android:scaleType="centerInside"
             android:src="@drawable/setting" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_add_equip"
+        android:layout_below="@+id/ll_menu"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加设备"/>
 
     <RadioGroup
         android:id="@+id/radio_group"

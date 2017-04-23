@@ -13,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smart.home.R;
+import com.smart.home.activity.AddEquipActivity;
 import com.smart.home.activity.BulbControlActivity;
 import com.smart.home.activity.HomeActivity;
 
@@ -37,6 +39,14 @@ public class HomeFragment extends BaseFragment {
 
     private RadioButton rbWifi, rbServer, rbInfrared;
 
+    private static final String WIFI = "局域网";
+
+    private static final String SERVER = "服务器";
+
+    private static final String INFRARED = "红外";
+
+    private String schema = WIFI;
+
     @BindView(R.id.iv_explain)
     ImageView ivExplain;
     @BindView(R.id.iv_setting)
@@ -49,6 +59,8 @@ public class HomeFragment extends BaseFragment {
     ImageView ivAirContidion;
     @BindView(R.id.iv_fan)
     ImageView ivFan;
+    @BindView(R.id.tv_add_equip)
+    TextView TvAddEquip;
 
 
     public static HomeFragment newInstance(){
@@ -94,12 +106,15 @@ public class HomeFragment extends BaseFragment {
             switch (v.getId()){
                 case R.id.rb_wifi:
                     Toast.makeText(getActivity(), "one", Toast.LENGTH_SHORT).show();
+                    schema = WIFI;
                     break;
                 case R.id.rb_server:
                     Toast.makeText(getActivity(), "two", Toast.LENGTH_SHORT).show();
+                    schema = SERVER;
                     break;
                 case R.id.rb_infrared:
                     Toast.makeText(getActivity(), "three", Toast.LENGTH_SHORT).show();
+                    schema = INFRARED;
                     break;
             }
 
@@ -107,16 +122,26 @@ public class HomeFragment extends BaseFragment {
     };
 
 
-    @OnClick({R.id.iv_explain, R.id.iv_setting, R.id.iv_bulb, R.id.iv_air_condition, R.id.iv_tv, R.id.iv_fan})
+    @OnClick({R.id.iv_explain, R.id.iv_setting, R.id.iv_bulb, R.id.iv_air_condition, R.id.iv_tv, R.id.iv_fan, R.id.tv_add_equip})
     public void OnClick(View view){
         switch (view.getId()){
+            //阅读说明
             case R.id.iv_explain:
                 break;
+            //电灯
             case R.id.iv_bulb:
-                BulbControlActivity.Launch(getActivity());
+                BulbControlActivity.Launch(getActivity(), schema);
                 break;
+            //设置
             case R.id.iv_setting:
                 ((HomeActivity) getActivity()).showTab(1);
+                break;
+            //添加设备
+            case R.id.tv_add_equip:
+                AddEquipActivity.launch(getActivity());
+                break;
+
+            default:
                 break;
         }
 

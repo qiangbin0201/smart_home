@@ -4,17 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.smart.home.R;
 
 import java.util.Random;
 
-import cn.carbs.android.library.AutoZoomInImageView;
 
 /**
  * Created by lenovo on 2017/4/8.

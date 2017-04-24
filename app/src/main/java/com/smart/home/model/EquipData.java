@@ -3,6 +3,7 @@ package com.smart.home.model;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Property;
 
 /**
  * Created by qiangbin on 2017/4/22.
@@ -50,6 +51,7 @@ public class EquipData {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     @Generated(hash = 1388817259)
     public EquipData(Long id, String equipName, String equipPosition,

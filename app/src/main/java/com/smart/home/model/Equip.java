@@ -6,8 +6,12 @@ package com.smart.home.model;
 
 public class Equip {
 
-    private String equipName;
+    public int itemId;
 
-    private String equipPosition;
+    public String equipName;
+
+    public String equipPosition;
+
+    public boolean isSelectDel;
 
 }

@@ -49,14 +49,32 @@ public class EquipDataPresenter {
         return list;
     }
 
+    //查询数据库中所有数据
+    public List<EquipData> queryAllData(){
+        List<EquipData> list = mEquipDataDao.loadAll();
+        return list;
+    }
+
     //根据id删除数据库中的信息
     public void deleteData(Long id){
+
         mEquipDataDao.deleteByKey(id);
+    }
+
+    public void deleteByEquipName(String equipPosition){
+        EquipData findUser = mEquipDataDao.queryBuilder().where(EquipDataDao.Properties.EquipPosition.eq("equipPosition")).build().unique();
+        Long qw = findUser.getId();
+        deleteData(findUser.getId());
     }
 
     //删除数据库中的所有信息
     public void deleteAllData(){
         mEquipDataDao.deleteAll();
+    }
+
+    //根据equip对象删除数据库中的信息
+    public void deleteByEquipData(EquipData equipData){
+        mEquipDataDao.delete(equipData);
     }
 
     //向数据库插入信息

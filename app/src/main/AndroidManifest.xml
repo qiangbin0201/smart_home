@@ -33,6 +33,10 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.MyEquipActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppHomeTheme"/>
     </application>
 
 

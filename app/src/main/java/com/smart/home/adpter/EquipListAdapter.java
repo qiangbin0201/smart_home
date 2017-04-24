@@ -27,6 +27,8 @@ public class EquipListAdapter extends BaseAdapter{
 
     private List<Equip> mSelectToDeleteList = new ArrayList<>();
 
+    private boolean isManageStatus = false;
+
     public EquipListAdapter(Context context){
         mContext = context;
     }
@@ -56,6 +58,7 @@ public class EquipListAdapter extends BaseAdapter{
             mEquipViewHolder = new EquipViewHolder();
 
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_equip_item, null);
+            mEquipViewHolder.nomalView = convertView;
             mEquipViewHolder.mIvDelete = (ImageView) convertView.findViewById(R.id.iv_delete);
             mEquipViewHolder.mTvEquipName = (TextView) convertView.findViewById(R.id.tv_equip_name);
             mEquipViewHolder.mTvEquipPosition = (TextView) convertView.findViewById(R.id.tv_equip_position);
@@ -66,12 +69,54 @@ public class EquipListAdapter extends BaseAdapter{
             mEquipViewHolder = (EquipViewHolder) convertView.getTag();
 
         }
+        mEquipViewHolder.mTvEquipName.setText(mEquipList.get(position).equipName);
+        mEquipViewHolder.mTvEquipPosition.setText(mEquipList.get(position).equipPosition);
+
+
+        final Equip model = (Equip) getItem(position);
+        if(isManageStatus){
+            mEquipViewHolder.mIvDelete.setVisibility(View.VISIBLE);
+            if(model.isSelectDel){
+                mEquipViewHolder.mIvDelete.setImageResource(R.drawable.checkbox_checked);
+            }else {
+                mEquipViewHolder.mIvDelete.setImageResource(R.drawable.checkbox_checked_disable);
+            }
+        }else {
+            mEquipViewHolder.mIvDelete.setVisibility(View.GONE);
+        }
+
+        mEquipViewHolder.mIvDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                model.isSelectDel = !model.isSelectDel;
+                if(model.isSelectDel){
+                    model.itemId = position + 1;
+                    mSelectToDeleteList.add(model);
+                }else {
+                    mSelectToDeleteList.remove(model);
+                }
+                notifyDataSetChanged();
+            }
+        });
 
         return convertView;
     }
 
-    class EquipViewHolder{
+    public List<Equip> getEquipList(){
+        return mEquipList;
+    }
 
+    public List<Equip> getSelectToDeleteList(){
+        return mSelectToDeleteList;
+    }
+
+    public void setIsManageStatus(boolean isManageStatus) {
+        this.isManageStatus = isManageStatus;
+        notifyDataSetChanged();
+    }
+
+    class EquipViewHolder{
+        View nomalView;
         ImageView mIvDelete;
 
         TextView mTvEquipName;

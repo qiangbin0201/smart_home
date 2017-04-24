@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.smart.home.R;
 import com.smart.home.View.SettingItemView;
 import com.smart.home.activity.HomeActivity;
+import com.smart.home.activity.MyEquipActivity;
 import com.smart.home.presenter.EquipDataPresenter;
 
 /**
@@ -70,6 +71,7 @@ public class SettingFragment extends BaseFragment {
                     break;
 
                 case R.id.view_equip:
+                    MyEquipActivity.launch(getActivity());
                     break;
 
 

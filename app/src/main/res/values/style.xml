@@ -59,6 +59,12 @@
         <item name="android:textSize">@dimen/B</item>
     </style>
 
+    <!-- 设置页Item字体 -->
+    <style name="SettingItemTitleText">
+        <item name="android:textColor">@color/d</item>
+        <item name="android:textSize">@dimen/E</item>
+    </style>
+
     <!--标题栏上的操作按钮文字-->
     <style name="TitleBarActionText">
         <item name="android:textColor">@color/d</item>

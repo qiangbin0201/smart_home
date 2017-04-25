@@ -20,8 +20,8 @@ public class TTYCApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-            }
-        }
+    }
+}
 
 
 

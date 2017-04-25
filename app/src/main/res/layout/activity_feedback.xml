@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_mine_page">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_mine_page"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/margin_page"
+        android:paddingRight="@dimen/margin_page"
+        android:paddingTop="10dp">
+        <EditText
+            android:id="@+id/et_feedback_content"
+            android:textColor="@color/d"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_feedback"
+            android:gravity="top"
+            android:hint="@string/feedback_content_hit"
+            android:minLines="8"
+            android:padding="@dimen/margin_news_item_block"
+            android:textColorHint="@color/f" />
+
+        <EditText
+            android:id="@+id/et_feedback_contact"
+            android:textColor="@color/d"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_feedback"
+            android:gravity="center_vertical"
+            android:hint="@string/feedback_contact_hit"
+            android:padding="@dimen/margin_news_item_block"
+            android:textColorHint="@color/f" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/button_black"
+            android:text="提交"
+            android:gravity="center"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/D" />
+    </LinearLayout>
+
+</LinearLayout>

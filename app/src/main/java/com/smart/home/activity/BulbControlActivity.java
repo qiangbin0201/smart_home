@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.View;
@@ -38,16 +39,23 @@ public class BulbControlActivity extends BaseActivity {
 
     private String mSchema;
 
+    private boolean isBulbOff = true;
+
     private static final String SCHEMA = "schema";
 
     private List<EquipData> list;
 
     private List<String> mEquipPositionList;
 
-    @BindView(R.id.tv_equip_position)
-    TextView tvEquipPosition;
-    @BindView(R.id.tv_select_equip)
-    TextView tvSelectEquip;
+    @BindView(R.id.tv_equip)
+    TextView tvEquip;
+    @BindView(R.id.iv_brightness_up)
+    ImageView ivBrightnessUp;
+    @BindView(R.id.iv_brightness_down)
+    ImageView ivBrightnessDown;
+    @BindView(R.id.iv_bulb)
+    ImageView ivBulb;
+
 
 
     public static void Launch(Context context, String schema) {
@@ -75,18 +83,21 @@ public class BulbControlActivity extends BaseActivity {
 
 
         ButterKnife.bind(this);
-//        initData();
     }
 
-    @OnClick({R.id.tv_select_equip, R.id.tv_equip_position})
+    @OnClick({R.id.iv_bulb, R.id.iv_brightness_up})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_select_equip:
-                if (CollectionUtil.isEmpty(mEquipPositionList)) {
-                    ToastUtil.showBottom(this, getString(R.string.please_add_equip));
-                } else {
-                    CustomDialogFactory.showListDialog(this, false, DIALOG_TITLE, mEquipPositionList, mOnClickListener);
+            case R.id.iv_bulb:
+                if(isBulbOff) {
+                    ivBulb.setImageResource(R.drawable.bulb_on);
+                    isBulbOff = false;
+                }else {
+                    ivBulb.setImageResource(R.drawable.bulb_off);
+                    isBulbOff = true;
                 }
+
+
                 break;
             default:
                 break;
@@ -120,7 +131,7 @@ public class BulbControlActivity extends BaseActivity {
 
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
-            tvEquipPosition.setText(mEquipPositionList.get(i));
+            tvEquip.setText(mEquipPositionList.get(i));
         }
     };
 

@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.smart.home.R;
 import com.smart.home.activity.AddEquipActivity;
+import com.smart.home.activity.AirConditionActivity;
 import com.smart.home.activity.BulbControlActivity;
+import com.smart.home.activity.FanActivity;
 import com.smart.home.activity.HomeActivity;
 import com.smart.home.activity.TvControlActivity;
 
@@ -73,7 +75,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home,container, false);
-        unbinder = ButterKnife.bind(this,mView);
+        unbinder = ButterKnife.bind(this, mView);
         return mView;
     }
 
@@ -109,9 +111,11 @@ public class HomeFragment extends BaseFragment {
                 break;
             //空调
             case R.id.iv_air_condition:
+                AirConditionActivity.launch(getActivity(),(String) mSpinnerSchema.getSelectedItem());
                 break;
 
             case R.id.iv_fan:
+                FanActivity.Launch(getActivity(), (String) mSpinnerSchema.getSelectedItem());
                 break;
 
             //设置

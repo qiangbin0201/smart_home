@@ -456,5 +456,25 @@ public class CustomDialogFactory {
         return alertDialog;
     }
 
+    public static AlertDialog showExplainDialog(Context context, boolean cancelable, OnDialogClickListener positiveClickListener, boolean positiveAutoDismiss){
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(cancelable);
+        alertDialog.setCancelable(cancelable);
+        alertDialog.getWindow().setContentView(R.layout.dialog_style_explain);
+        TextView mTextViewKnow = (TextView) alertDialog.findViewById(R.id.tv_know);
+
+        mTextViewKnow.setOnClickListener(l -> {
+            if (positiveAutoDismiss)
+                alertDialog.dismiss();
+            if (positiveClickListener != null) {
+                positiveClickListener.onClick(alertDialog);
+            }
+        });
+
+        return alertDialog;
+
+    }
+
 
 }

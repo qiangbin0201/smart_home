@@ -27,6 +27,7 @@ import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
 import com.smart.home.utils.ActivityStack;
+import com.smart.home.utils.ToastUtil;
 import com.smart.home.utils.Utils;
 import com.squareup.otto.Bus;
 
@@ -352,6 +353,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         clearSubscriptions();
+        ToastUtil.clear();
+        clearSubscriptions();
 //        dismissLoadingDialog();
 //        ShareManager.getInstance().onDestroy();
         mBaseActivity = null;
@@ -444,6 +447,7 @@ public class BaseActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
 
     /**
      * 根据预置的样式设置toolbar，标题从{@link #getTitle()}中获取，必须在{@link #setContentView}之前调用，否则会报错

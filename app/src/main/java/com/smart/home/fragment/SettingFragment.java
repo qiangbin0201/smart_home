@@ -1,5 +1,7 @@
 package com.smart.home.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,9 +11,12 @@ import android.widget.TextView;
 
 import com.smart.home.R;
 import com.smart.home.View.SettingItemView;
+import com.smart.home.activity.FeedbackActivity;
 import com.smart.home.activity.HomeActivity;
 import com.smart.home.activity.MyEquipActivity;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.OnDialogClickListener;
 
 /**
  * Created by qiangbin on 2017/4/16.
@@ -19,11 +24,15 @@ import com.smart.home.presenter.EquipDataPresenter;
 
 public class SettingFragment extends BaseFragment {
 
+    private static final String DIALOG_TITLE = "删除设备";
+
+    private static final String DIALOG_CONTENT = "您确定要删除全部设备吗";
+
     private TextView tv_back;
 
     private EquipDataPresenter mEquipDataPresenter;
 
-    private SettingItemView mViewClear, mViewVersion, mViewFeedback, mViewEquip;
+    private SettingItemView mViewClear, mViewVersion, mViewFeedback, mViewEquip, mViewExplain;
 
     public static SettingFragment newInstance(){
         SettingFragment fragment = new SettingFragment();
@@ -54,6 +63,8 @@ public class SettingFragment extends BaseFragment {
         mViewVersion.setOnClickListener(mOnClickListener);
         mViewEquip = (SettingItemView) view.findViewById(R.id.view_equip);
         mViewEquip.setOnClickListener(mOnClickListener);
+        mViewExplain = (SettingItemView) view.findViewById(R.id.view_explain);
+        mViewExplain.setOnClickListener(mOnClickListener);
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -65,19 +76,53 @@ public class SettingFragment extends BaseFragment {
                     break;
                 //清理数据库的设备信息
                 case R.id.view_clear:
-                    mEquipDataPresenter = EquipDataPresenter.getInstance();
-                    mEquipDataPresenter.initDbHelp(getActivity());
-                    mEquipDataPresenter.deleteAllData();
+                    CustomDialogFactory.showConfirmDialog(getActivity(), false, DIALOG_TITLE, DIALOG_CONTENT,"我要删","算了",
+                            mPositiveClickListener, mNegativeClickListener, null);
                     break;
 
+                //我的设备
                 case R.id.view_equip:
                     MyEquipActivity.launch(getActivity());
                     break;
+
+                //使用说明
+                case R.id.view_explain:
+                    CustomDialogFactory.showExplainDialog(getActivity(), false, mOnDialogClickListener, true);
+                    break;
+
+                case R.id.view_feedback:
+                    FeedbackActivity.launch(getActivity());
+                    break;
+
 
 
                 default:
                     break;
             }
+        }
+    };
+
+    private OnDialogClickListener mOnDialogClickListener = new OnDialogClickListener() {
+        @Override
+        public void onClick(AlertDialog dialog) {
+            dialog.dismiss();
+        }
+    };
+
+    private OnDialogClickListener mPositiveClickListener = new OnDialogClickListener() {
+        @Override
+        public void onClick(AlertDialog dialog) {
+            mEquipDataPresenter = EquipDataPresenter.getInstance();
+            mEquipDataPresenter.initDbHelp(getActivity());
+            mEquipDataPresenter.deleteAllData();
+        }
+    };
+
+    private OnDialogClickListener mNegativeClickListener = new OnDialogClickListener() {
+        @Override
+        public void onClick(AlertDialog dialog) {
+            dialog.dismiss();
+
         }
     };
 

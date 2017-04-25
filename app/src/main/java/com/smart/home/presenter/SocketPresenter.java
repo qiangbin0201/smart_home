@@ -15,7 +15,7 @@ import java.net.Socket;
 
 public class SocketPresenter {
 
-    private String mHost = "";
+    private String mHost = "192.168.1.123";
 
     private int mSockectPort = 8888;
 

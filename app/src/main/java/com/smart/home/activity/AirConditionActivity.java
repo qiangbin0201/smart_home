@@ -1,6 +1,8 @@
 package com.smart.home.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
@@ -32,6 +34,12 @@ public class AirConditionActivity extends BaseActivity {
 
     private List<String> mEquipPositionList;
 
+    public static void launch(Context context, String schema){
+        Intent intent = new Intent(context, AirConditionActivity.class);
+        intent.putExtra(SCHEMA, schema);
+        context.startActivity(intent);
+    }
+
 
 
     @Override
@@ -44,8 +52,8 @@ public class AirConditionActivity extends BaseActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
         setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnClickListener);
@@ -82,4 +90,9 @@ public class AirConditionActivity extends BaseActivity {
         public void onClick(DialogInterface dialogInterface, int i) {
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

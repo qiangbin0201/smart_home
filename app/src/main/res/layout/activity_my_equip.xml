@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_app">
+    android:background="@color/bg_mine_page">
     <ListView
+        android:layout_marginTop="10dp"
         android:id="@+id/list_equip"
         style="@style/ListViewWithDividerStyle"
         android:layout_above="@+id/tv_delete">

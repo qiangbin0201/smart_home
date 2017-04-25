@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_background"
+    android:gravity="center_vertical">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:id="@+id/iv_fsadd"
+                android:src="@drawable/speedhigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"/>
+            <TextView
+                android:id="@+id/tv_fs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="风速"
+                android:textSize="18sp"
+                android:paddingRight="60dp"
+                android:textColor="@color/black"
+                />
+                <ImageView
+                    android:paddingTop="20dp"
+                    android:id="@+id/iv_fscut"
+                    android:src="@drawable/speedlow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+        </LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tv_off"
+            android:paddingLeft="60dp"/>
+    </LinearLayout>
+
 
 </LinearLayout>

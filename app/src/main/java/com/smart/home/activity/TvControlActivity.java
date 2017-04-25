@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.smart.home.R;
 import com.smart.home.model.EquipData;
@@ -44,17 +45,18 @@ public class TvControlActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        EquipDataPresenter.getInstance().initDbHelp(this);
         initData();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
         setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnClickListener);
-        setContentView(R.layout.activity_bulb);
+        setContentView(R.layout.activity_tv);
 
     }
 

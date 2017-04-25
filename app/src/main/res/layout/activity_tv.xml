@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_background">
+    <TextView
+        android:id="@+id/tv_equip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:text="控制对象"
+        />
+
+    <ImageView
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/tv_off"
+        android:id="@+id/iv_tv_off"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/iv_channel_up"
+        />
+
+
+
+
+    <ImageView
+        android:id="@+id/iv_channel_up"
+        android:layout_below="@+id/tv_equip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:src="@drawable/arrow_up"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_channel_up"
+        android:layout_marginTop="30dp"
+        android:text="频道"
+        android:textColor="@color/black"
+        android:layout_alignRight="@+id/iv_channel_up"
+        />
+    <ImageView
+        android:id="@+id/iv_channel_down"
+        android:layout_below="@+id/iv_channel_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_alignRight="@+id/iv_channel_up"
+        android:layout_alignEnd="@+id/iv_channel_up"
+        android:src="@drawable/arrow_down"
+        />
+    <ImageView
+        android:id="@+id/iv_sound_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sound_up"
+        android:layout_alignTop="@+id/iv_channel_up"
+        android:layout_marginLeft="50dp"
+        />
+    <TextView
+        android:layout_below="@+id/iv_sound_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:layout_alignLeft="@+id/iv_sound_up"
+        android:text="音量"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sound_down"
+        android:layout_alignTop="@+id/iv_channel_down"
+        android:layout_alignLeft="@+id/iv_sound_up"
+        />
+
+
+
+
+</RelativeLayout>

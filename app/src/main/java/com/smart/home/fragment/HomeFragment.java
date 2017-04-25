@@ -20,6 +20,7 @@ import com.smart.home.R;
 import com.smart.home.activity.AddEquipActivity;
 import com.smart.home.activity.BulbControlActivity;
 import com.smart.home.activity.HomeActivity;
+import com.smart.home.activity.TvControlActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,20 +36,14 @@ public class HomeFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-    private RadioGroup mRadioGroup;
 
-    private RadioButton rbWifi, rbServer, rbInfrared;
 
-    private static final String WIFI = "局域网";
+    private String[] dataSchema = {"局域网", "服务器", "红外"};
 
-    private static final String SERVER = "服务器";
+    private Spinner mSpinnerSchema;
 
-    private static final String INFRARED = "红外";
-
-    private String schema = WIFI;
-
-    @BindView(R.id.iv_explain)
-    ImageView ivExplain;
+    @BindView(R.id.iv_add_equip)
+    ImageView ivAddEquip;
     @BindView(R.id.iv_setting)
     ImageView ivSetting;
     @BindView(R.id.iv_bulb)
@@ -59,8 +54,7 @@ public class HomeFragment extends BaseFragment {
     ImageView ivAirContidion;
     @BindView(R.id.iv_fan)
     ImageView ivFan;
-    @BindView(R.id.tv_add_equip)
-    TextView TvAddEquip;
+
 
 
     public static HomeFragment newInstance(){
@@ -90,55 +84,39 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initView(View view) {
-        mRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group);
-        rbWifi = (RadioButton) view.findViewById(R.id.rb_wifi);
-        rbWifi.setOnClickListener(mOnClickListener);
-        rbServer = (RadioButton) view.findViewById(R.id.rb_server);
-        rbServer.setOnClickListener(mOnClickListener);
-        rbInfrared = (RadioButton) view.findViewById(R.id.rb_infrared);
-        rbInfrared.setOnClickListener(mOnClickListener);
+
+        mSpinnerSchema = (Spinner) view.findViewById(R.id.spinner_schema);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.view_spinner_item, dataSchema);
+        mSpinnerSchema.setAdapter(adapter);
     }
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener(){
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.rb_wifi:
-                    Toast.makeText(getActivity(), "one", Toast.LENGTH_SHORT).show();
-                    schema = WIFI;
-                    break;
-                case R.id.rb_server:
-                    Toast.makeText(getActivity(), "two", Toast.LENGTH_SHORT).show();
-                    schema = SERVER;
-                    break;
-                case R.id.rb_infrared:
-                    Toast.makeText(getActivity(), "three", Toast.LENGTH_SHORT).show();
-                    schema = INFRARED;
-                    break;
-            }
-
-        }
-    };
 
 
-    @OnClick({R.id.iv_explain, R.id.iv_setting, R.id.iv_bulb, R.id.iv_air_condition, R.id.iv_tv, R.id.iv_fan, R.id.tv_add_equip})
+    @OnClick({R.id.iv_add_equip, R.id.iv_setting, R.id.iv_bulb, R.id.iv_air_condition, R.id.iv_tv, R.id.iv_fan})
     public void OnClick(View view){
         switch (view.getId()){
             //阅读说明
-            case R.id.iv_explain:
+            case R.id.iv_add_equip:
+                AddEquipActivity.launch(getActivity());
                 break;
             //电灯
             case R.id.iv_bulb:
-                BulbControlActivity.Launch(getActivity(), schema);
+                BulbControlActivity.Launch(getActivity(), (String) mSpinnerSchema.getSelectedItem());
                 break;
+            //电视
+            case R.id.iv_tv:
+                TvControlActivity.launch(getActivity(), (String) mSpinnerSchema.getSelectedItem());
+                break;
+            //空调
+            case R.id.iv_air_condition:
+                break;
+
+            case R.id.iv_fan:
+                break;
+
             //设置
             case R.id.iv_setting:
                 ((HomeActivity) getActivity()).showTab(1);
-                break;
-            //添加设备
-            case R.id.tv_add_equip:
-                AddEquipActivity.launch(getActivity());
                 break;
 
             default:

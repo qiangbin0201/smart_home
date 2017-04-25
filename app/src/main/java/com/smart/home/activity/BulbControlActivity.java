@@ -32,9 +32,7 @@ import butterknife.OnClick;
 
 public class BulbControlActivity extends BaseActivity {
 
-    private static final String TOOLBAR_TITLE = "电灯";
-
-    private static final String DIALOG_TITLE = "请选择设备";
+    private  static final String TOOLBAR_TITLE = "电灯";
 
     private Spinner spinner;
 
@@ -59,18 +57,25 @@ public class BulbControlActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        //初始化数据库
+        EquipDataPresenter.getInstance().initDbHelp(this);
+        initData();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
-        setToolbar(ToolbarStyle.RETURN_TITLE, TOOLBAR_TITLE);
+        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnclickListener);
         setContentView(R.layout.activity_bulb);
 
-        //初始化数据库
-        EquipDataPresenter.getInstance().initDbHelp(this);
+
 
         ButterKnife.bind(this);
-        initData();
+//        initData();
     }
 
     @OnClick({R.id.tv_select_equip, R.id.tv_equip_position})
@@ -88,6 +93,17 @@ public class BulbControlActivity extends BaseActivity {
         }
 
     }
+
+    private View.OnClickListener mBarOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (CollectionUtil.isEmpty(mEquipPositionList)) {
+                ToastUtil.showBottom(BulbControlActivity.this, getString(R.string.please_add_equip));
+            } else {
+                CustomDialogFactory.showListDialog(BulbControlActivity.this, false, DIALOG_TITLE, mEquipPositionList, mOnClickListener);
+            }
+        }
+    };
 
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);

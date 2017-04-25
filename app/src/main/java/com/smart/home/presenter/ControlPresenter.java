@@ -13,6 +13,15 @@ import rx.Observable;
 
 public class ControlPresenter {
 
+    private static ControlPresenter mControlPresenter;
+
+    public static ControlPresenter getInstance(){
+        if(mControlPresenter == null){
+            mControlPresenter = new ControlPresenter();
+        }
+        return mControlPresenter;
+    }
+
     public Observable<BaseResponse<StateDetail>> getBulbData(String position, String state, int brightness){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
         return service.getBulbData(position, state, brightness);

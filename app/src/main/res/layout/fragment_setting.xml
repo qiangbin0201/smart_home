@@ -64,6 +64,15 @@
         </com.smart.home.View.SettingItemView>
 
         <View style="@style/SettingFragmentLineView" />
+        <com.smart.home.View.SettingItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleD="使用说明"
+            app:leftIcon="@drawable/explain"
+            >
+
+        </com.smart.home.View.SettingItemView>
+        <View style="@style/SettingFragmentLineView" />
 
         <com.smart.home.View.SettingItemView
             android:id="@+id/view_version"

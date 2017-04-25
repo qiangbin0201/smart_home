@@ -65,7 +65,7 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
         super.onCreate(savedInstanceState);
 
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
+        overridePendingTransition(R.anim.images_detail_screen_in, R.anim.images_detail_screen_out);
         setToolbar(ToolbarStyle.RETURN_TITLE, TOOLBAR_TITLE);
 
         setContentView(R.layout.activity_add_equip);

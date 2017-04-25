@@ -117,11 +117,22 @@ public class MyEquipActivity extends BaseActivity {
 
     private void deleteEquip() {
         List<Equip> list = mEquipListAdapter.getSelectToDeleteList();
-        for(Equip equip: list){
-            EquipData mEquipData = new EquipData();
-            Long ss = mEquipData.getId();
 
-            mEquipDataPresenter.deleteData((long) equip.itemId);
+        for(Equip equip: list){
+//            EquipData mEquipData = new EquipData();
+            List<EquipData> mDeleteList = mEquipDataPresenter.queryEquipList(equip.equipPosition);
+
+            for(int i = 0; i < mDeleteList.size(); i++){
+                mEquipDataPresenter.deleteByEquipData(mDeleteList.get(i));
+            }
+
+//            mEquipDataPresenter.deleteByEquipData( mEquipDataPresenter.queryEquipList(equip.equipPosition).get(0));
+//            mEquipDataPresenter.queryUserList(equip.equipPosition);
+
+
+//            Long ss = mEquipData.getId();
+
+//            mEquipDataPresenter.deleteData((long) equip.itemId);
 //            String str = equip.equipPosition;
 //            mEquipDataPresenter.deleteByEquipName(equip.equipPosition);
 

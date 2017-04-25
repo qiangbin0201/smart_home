@@ -25,15 +25,33 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".activity.BulbControlActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".activity.AddEquipActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme"/>
+
         <activity android:name=".activity.MyEquipActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppHomeTheme"/>
+
+        <activity android:name=".activity.TvControlActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppHomeTheme"/>
+
+        <activity android:name=".activity.AirConditionActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppHomeTheme"/>
+
+        <activity android:name=".activity.FanActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppHomeTheme"/>

@@ -1,10 +1,8 @@
 package com.smart.home.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Adapter;
 
 import com.afa.tourism.greendao.gen.DaoMaster;
 import com.afa.tourism.greendao.gen.DaoSession;
@@ -49,10 +47,22 @@ public class EquipDataPresenter {
         return list;
     }
 
+    public List<EquipData> queryEquipList(String equipPosition) {
+
+        QueryBuilder<EquipData> qb = mEquipDataDao.queryBuilder();
+        ArrayList<EquipData> list = (ArrayList<EquipData>) qb.where(EquipDataDao.Properties.EquipPosition.eq(equipPosition)).list();
+        return list;
+    }
+
+
     //查询数据库中所有数据
     public List<EquipData> queryAllData(){
         List<EquipData> list = mEquipDataDao.loadAll();
         return list;
+    }
+
+    public void deleteDataByEquipData(EquipData equipData){
+        mEquipDataDao.delete(equipData);
     }
 
     //根据id删除数据库中的信息

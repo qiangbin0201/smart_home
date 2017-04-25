@@ -96,6 +96,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected BaseActivity mBaseActivity;
 
+    protected static final String DIALOG_TITLE = "请选择设备";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

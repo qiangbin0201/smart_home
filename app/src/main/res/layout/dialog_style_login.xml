@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:includeFontPadding="false"
-        tools:text="登录后收藏,内容永不丢失" />
+        tools:text="" />
 
 
 </LinearLayout>

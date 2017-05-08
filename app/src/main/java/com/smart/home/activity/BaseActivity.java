@@ -21,7 +21,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.smart.home.R;
+import com.smart.home.api.BaseResponse;
 import com.smart.home.confige.AppProxy;
+import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
@@ -35,6 +37,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -63,6 +66,14 @@ import rx.Subscription;
  * 5、实现了ViewGroupVO接口，增加对视图绑定的支持
  */
 public class BaseActivity extends AppCompatActivity {
+
+    protected static final String LOCAL_NETWORK = "局域网";
+
+    protected static final String SERVER = "服务器";
+
+    protected boolean isSelectEquip = false;
+
+    protected static final String INFRARED = "红外线";
 
     protected WeakRefHandler mWeakRefHandler;
 

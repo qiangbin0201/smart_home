@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lenovo on 2017/4/23.
+ * Created by Qiangbin on 2017/4/23.
  */
 
 public class EquipDataPresenter {
@@ -47,6 +47,7 @@ public class EquipDataPresenter {
         return list;
     }
 
+    //根据设备位置查询
     public List<EquipData> queryEquipList(String equipPosition) {
 
         QueryBuilder<EquipData> qb = mEquipDataDao.queryBuilder();

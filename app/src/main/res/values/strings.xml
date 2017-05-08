@@ -32,4 +32,7 @@
     <string name="feedback_fail">反馈失败</string>
     <string name="feedback">反馈建议</string>
     <string name="feedback_input_content_tip">请填写反馈信息</string>
+    <string name="please_select_equip">请先选择设备</string>
+    <string name="please_open_bulb">请先点亮灯泡</string>
+    <string name="please_open_tv">请先打开电视</string>
 </resources>

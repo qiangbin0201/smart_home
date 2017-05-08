@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.smart.home" >
+    package="com.smart.home">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -9,8 +9,8 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/WelcomeTheme" >
-        <activity android:name=".activity.SplashScreenActivity" >
+        android:theme="@style/WelcomeTheme">
+        <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,51 +18,61 @@
             </intent-filter>
         </activity>
 
-
         <!-- 首页 -->
         <activity
-           android:name=".activity.HomeActivity"
+            android:name=".activity.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan"/>
-
-        <activity android:name=".activity.BulbControlActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.BulbControlActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan"/>
-
-        <activity android:name=".activity.AddEquipActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.AddEquipActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".activity.MyEquipActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.MyEquipActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppHomeTheme"/>
-
-        <activity android:name=".activity.TvControlActivity"
+            android:theme="@style/AppHomeTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.TvControlActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppHomeTheme"/>
-
-        <activity android:name=".activity.AirConditionActivity"
+            android:theme="@style/AppHomeTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.AirConditionActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppHomeTheme"/>
-
-        <activity android:name=".activity.FanActivity"
+            android:theme="@style/AppHomeTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.FanActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppHomeTheme"/>
-
-        <activity android:name=".activity.FeedbackActivity"
+            android:theme="@style/AppHomeTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.FeedbackActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+
+        <service
+            android:name=".service.BulbServerService"
+            android:enabled="true" />
+        <service
+            android:name=".service.TvServerService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.BaseService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
-
 
 </manifest>

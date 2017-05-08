@@ -9,4 +9,14 @@ import java.io.Serializable;
 public class StateDetail implements Serializable {
     //服务器返回状态
     public String state;
+
+    public int brightness;
+
+    //服务器返回的音量值
+    public int tv_volume;
+
+    //服务器返回的频道值
+    public int tv_channel;
+
+
 }

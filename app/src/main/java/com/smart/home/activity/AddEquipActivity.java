@@ -1,8 +1,11 @@
 package com.smart.home.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -21,11 +24,14 @@ import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.EquipDataPresenter;
 
 import android.view.View;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bingoogolapple.photopicker.activity.BGAPhotoPickerActivity;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
+import cn.bingoogolapple.qrcode.zxing.QRCodeDecoder;
 
 /**
  * Created by lenovo on 2017/4/21.
@@ -39,6 +45,8 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
     //判断是否在扫描界面
     private boolean isScanView = false;
+
+    private static final int REQUEST_CODE_CHOOSE_QRCODE_FROM_GALLERY = 666;
 
     private Spinner mSpinner;
 
@@ -81,6 +89,26 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
     }
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mQRCodeView.startCamera();
+//        mQRCodeView.startSpot();
+//    }
+
+    @Override
+    protected void onResume() {
+        mQRCodeView.showScanRect();
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onStop() {
+        mQRCodeView.stopCamera();
+        super.onStop();
+    }
+
     @OnClick({R.id.iv_code, R.id.btn_add_equip})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -93,6 +121,8 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
                 mQRCodeView.setVisibility(View.VISIBLE);
                 //委托代理完成扫描
                 mQRCodeView.startCamera();
+                mQRCodeView.startSpot();
+                mQRCodeView.showScanRect();
                 mQRCodeView.setDelegate(this);
                 break;
             //添加设备信息到数据库
@@ -111,6 +141,7 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
     @Override
     public void onScanQRCodeSuccess(String result) {
+        vibrate();
         mSpinner.setVisibility(View.GONE);
         llScan.setVisibility(View.VISIBLE);
         etEquipPosition.setVisibility(View.VISIBLE);
@@ -123,6 +154,11 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
     public void onScanQRCodeOpenCameraError() {
 
 
+    }
+
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(200);
     }
 
     @Override

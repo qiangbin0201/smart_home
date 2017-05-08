@@ -6,12 +6,22 @@ import com.smart.home.confige.AppProxy;
 import com.smart.home.model.StateDetail;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by qiangbin on 2017/4/18.
  */
 
 public class ControlPresenter {
+
+    private static final String BULB = "电灯";
+
+    private static final String TV = "电视";
+
+    private static final String AIR_CONDITION = "空调";
+
+    private static final String FAN = "风扇";
+
 
     private static ControlPresenter mControlPresenter;
 
@@ -22,23 +32,23 @@ public class ControlPresenter {
         return mControlPresenter;
     }
 
-    public Observable<BaseResponse<StateDetail>> getBulbData(String position, String state, int brightness){
+    public Observable<BaseResponse<StateDetail>> getBulbData(String equipCode, String state, int brightness){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
-        return service.getBulbData(position, state, brightness);
+        return service.getBulbData(BULB, equipCode, state, brightness);
     }
 
-    public Observable<BaseResponse<StateDetail>> getTvData(String position, String state, String channel, int volume){
+    public Observable<BaseResponse<StateDetail>> getTvData(String equipCode, String state, int channel, int volume){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
-        return service.getTvData(position, state, channel, volume);
+        return service.getTvData(TV, equipCode, state, channel, volume);
     }
 
-    public Observable<BaseResponse<StateDetail>> getAirConditionData(String position, String state, String schema, int temperature){
+    public Observable<BaseResponse<StateDetail>> getAirConditionData(String equipCode, String state, String schema, int temperature){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
-        return service.getAirConditionData(position, state, schema, temperature);
+        return service.getAirConditionData(AIR_CONDITION, equipCode, state, schema, temperature);
     }
 
-    public Observable<BaseResponse<StateDetail>> getFanData(String position, String state, int speed){
+    public Observable<BaseResponse<StateDetail>> getFanData(String equipCode, String state, int speed){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
-        return service.getFanData(position, state, speed);
+        return service.getFanData(FAN, equipCode, state, speed);
     }
 }

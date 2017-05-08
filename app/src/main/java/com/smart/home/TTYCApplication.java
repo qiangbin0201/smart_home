@@ -19,6 +19,7 @@ public class TTYCApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance = this;
 
     }
 }

@@ -16,6 +16,10 @@ public class BaseService extends Service {
     public static ArrayList<Socket> socketList = new ArrayList<Socket>();
     protected Socket s;
 
+    protected static final String SELECT_EQUIP_CODE = "equipCode";
+
+    protected String mEquipCode;
+
 
     @Override
     public IBinder onBind(Intent intent) {

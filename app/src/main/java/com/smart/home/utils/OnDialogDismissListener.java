@@ -3,9 +3,9 @@ package com.smart.home.utils;
 import android.app.AlertDialog;
 
 /**
- * Created by 37X21=777 on 15/5/22.
+ * Created by qiangbin on 17/4/22.
  */
 public interface OnDialogDismissListener {
 
-    public void onDismiss(AlertDialog dialog);
+    void onDismiss(AlertDialog dialog);
 }

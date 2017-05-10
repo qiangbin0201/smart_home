@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_background"
-    android:gravity="center_vertical">
+    >
+    <TextView
+        android:id="@+id/tv_equip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:text="控制对象"
+        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_centerVertical="true"
         android:gravity="center">
 
         <LinearLayout
@@ -47,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:src="@drawable/tv_off" />
+            android:src="@drawable/off" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -67,7 +79,7 @@
                 android:id="@+id/tv_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="制冷"
+                android:text="自动"
                 android:textSize="18sp"
                 android:textColor="@color/black" />
 
@@ -81,4 +93,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

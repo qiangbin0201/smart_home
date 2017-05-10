@@ -18,7 +18,7 @@
         android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/tv_off"
+        android:src="@drawable/off"
         android:id="@+id/iv_tv_off"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/iv_channel_up"

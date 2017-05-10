@@ -24,7 +24,7 @@ public interface DataApiService {
 
     @FormUrlEncoded
     @POST("")
-    Observable<BaseResponse<StateDetail>> getAirConditionData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("schema") String schema, @Field("temperature") int temperature);
+    Observable<BaseResponse<StateDetail>> getAirConditionData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("mode") String mode, @Field("temperature") int temperature);
 
     @FormUrlEncoded
     @POST("")

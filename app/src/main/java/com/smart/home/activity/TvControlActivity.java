@@ -17,6 +17,7 @@ import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.service.BulbServerService;
+import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.ToastUtil;
@@ -44,11 +45,8 @@ public class TvControlActivity extends BaseActivity {
 
     private static final String TV_OFF = "tv_off";
 
-    private boolean isTvOpen = false;
-
     private String mSchema;
 
-    private String mSelectEquipCode;
 
     private List<EquipData> list;
 
@@ -106,34 +104,34 @@ public class TvControlActivity extends BaseActivity {
         if(isSelectEquip) {
             switch (view.getId()) {
                 case R.id.iv_tv_off:
-                    if(!isTvOpen) {
+                    if(!isEquipOpen) {
                         communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume);
-                        isTvOpen = true;
+                        isEquipOpen = true;
                     }else {
 
                         communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
-                        isTvOpen = false;
+                        isEquipOpen = false;
 
                     }
 
                     break;
                 case R.id.iv_sound_up:
-                    if (isTvOpen()) {
+                    if (isEquipOpen()) {
                         communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
                     }
                     break;
                 case R.id.iv_sound_down:
-                    if(isTvOpen()) {
+                    if(isEquipOpen()) {
                         communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
                     }
                     break;
                 case R.id.iv_channel_up:
-                    if(isTvOpen()) {
+                    if(isEquipOpen()) {
                         communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
                     }
                     break;
                 case R.id.iv_channel_down:
-                    if(isTvOpen()) {
+                    if(isEquipOpen()) {
                         communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
                     }
                     break;
@@ -160,7 +158,7 @@ public class TvControlActivity extends BaseActivity {
     private void communicationSchema(String tvProtocol, String TvState, int channel, int volume){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                BulbServerService.Launch(this, mSelectEquipCode, tvProtocol);
+                TvServerService.Launch(this, mSelectEquipCode, tvProtocol);
             }else if(mSchema.equals(SERVER)){
                 addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, TvState, channel, volume).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initTvData(r.data);
@@ -176,14 +174,6 @@ public class TvControlActivity extends BaseActivity {
         }
     }
 
-    private boolean isTvOpen(){
-        if(isTvOpen){
-            return true;
-        }else {
-            ToastUtil.showBottom(this, getString(R.string.please_open_tv));
-            return false;
-        }
-    }
 
 
     private View.OnClickListener mBarOnClickListener = new View.OnClickListener() {

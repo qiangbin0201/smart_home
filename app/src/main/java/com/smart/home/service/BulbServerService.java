@@ -16,15 +16,10 @@ import java.util.*;
 
 public class BulbServerService extends BaseService
 {
-	public static ArrayList<Socket> socketList = new ArrayList<Socket>();
-
-	private static final String SELECT_EQUIP_CODE = "equipCode";
 
 	private static final String BULB_PROTOCOL = "bulbProtocol";
 
 	private String mBulbProtocol;
-
-	private String mEquipCode;
 
 	@Override
 	public IBinder onBind(Intent intent) {

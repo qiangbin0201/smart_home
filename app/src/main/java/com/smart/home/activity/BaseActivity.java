@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import com.smart.home.R;
 import com.smart.home.api.BaseResponse;
 import com.smart.home.confige.AppProxy;
+import com.smart.home.model.EquipData;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
@@ -73,7 +74,15 @@ public class BaseActivity extends AppCompatActivity {
 
     protected boolean isSelectEquip = false;
 
+    protected boolean isEquipOpen = false;
+
     protected static final String INFRARED = "红外线";
+
+    protected List<EquipData> list;
+
+    protected List<String> mEquipPositionList;
+
+    protected String mSelectEquipCode;
 
     protected WeakRefHandler mWeakRefHandler;
 
@@ -167,6 +176,16 @@ public class BaseActivity extends AppCompatActivity {
     public View findViewById(int id) {
         View v = super.findViewById(id);
         return v;
+    }
+
+    //判断设备是否打开
+    protected boolean isEquipOpen(){
+        if(isEquipOpen){
+            return true;
+        }else {
+            ToastUtil.showBottom(this, getString(R.string.please_open_equip));
+            return false;
+        }
     }
 
 

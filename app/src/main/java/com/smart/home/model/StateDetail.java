@@ -18,5 +18,13 @@ public class StateDetail implements Serializable {
     //服务器返回的频道值
     public int tv_channel;
 
+    //服务器返回的音量值
+    public int air_temp;
+
+    //服务器返回的对应的空调模式
+    public int mode;
+
+    //服务器返回风扇的当前速度
+    public int speed;
 
 }

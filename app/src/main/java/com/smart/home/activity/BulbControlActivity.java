@@ -46,18 +46,12 @@ public class BulbControlActivity extends BaseActivity {
 
     private int current_brightness;
 
-    private boolean isBulbOpen = false;
-
     private static final String SCHEMA = "schema";
 
     private static final String BULB_OFF = "bulb_off";
 
     private static final String BULB_ON = "bulb_on";
 
-
-    private List<EquipData> list;
-
-    private List<String> mEquipPositionList;
 
     private String mSelectEquipCode;
 
@@ -100,20 +94,20 @@ public class BulbControlActivity extends BaseActivity {
         if(isSelectEquip) {
             switch (view.getId()) {
                 case R.id.iv_bulb:
-                    if (!isBulbOpen) {
+                    if (!isEquipOpen) {
                         ivBulb.setImageResource(R.drawable.bulb_on);
-                        isBulbOpen = true;
+                        isEquipOpen = true;
 
                         communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++);
                     } else {
                         ivBulb.setImageResource(R.drawable.bulb_off);
-                        isBulbOpen = false;
+                        isEquipOpen = false;
 
                         communicationSchema(BulbProtocol.BULB_OFF, null, -1);
                     }
                     break;
                 case R.id.iv_brightness_up:
-                    if (isBulbOpen()) {
+                    if (isEquipOpen()) {
                         communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
                     }
                     break;
@@ -124,7 +118,7 @@ public class BulbControlActivity extends BaseActivity {
 //                    } else {
 //                        ToastUtil.showBottom(this, getString(R.string.please_open_bulb));
 //                    }
-                    if (isBulbOpen()){
+                    if (isEquipOpen()){
                         communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
                     }
                     break;
@@ -164,7 +158,8 @@ public class BulbControlActivity extends BaseActivity {
             if(mSchema.equals(LOCAL_NETWORK)){
                 BulbServerService.Launch(this, mSelectEquipCode, bulbProtocol);
             }else if(mSchema.equals(SERVER)) {
-                addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, bulbState, brightness).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+                addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, bulbState, brightness)
+                        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initBulbData(r.data);
                     return;
                 }, e -> {
@@ -178,14 +173,6 @@ public class BulbControlActivity extends BaseActivity {
         }
     }
 
-    //判断电灯是否打开
-    private boolean isBulbOpen(){
-        if(!isBulbOpen){
-            ToastUtil.showBottom(this, getString(R.string.please_open_bulb));
-            return false;
-        }
-        return true;
-    }
 
     private DialogInterface.OnClickListener mOnClickListener = new DialogInterface.OnClickListener() {
 
@@ -196,7 +183,8 @@ public class BulbControlActivity extends BaseActivity {
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
-            addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+            addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                 initBulbData(r.data);
                 return;
             }, e -> {
@@ -211,6 +199,10 @@ public class BulbControlActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
 
 

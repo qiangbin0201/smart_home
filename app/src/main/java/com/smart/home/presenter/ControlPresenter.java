@@ -42,9 +42,9 @@ public class ControlPresenter {
         return service.getTvData(TV, equipCode, state, channel, volume);
     }
 
-    public Observable<BaseResponse<StateDetail>> getAirConditionData(String equipCode, String state, String schema, int temperature){
+    public Observable<BaseResponse<StateDetail>> getAirConditionData(String equipCode, String state, String mode, int temperature){
         DataApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(DataApiService.class);
-        return service.getAirConditionData(AIR_CONDITION, equipCode, state, schema, temperature);
+        return service.getAirConditionData(AIR_CONDITION, equipCode, state, mode, temperature);
     }
 
     public Observable<BaseResponse<StateDetail>> getFanData(String equipCode, String state, int speed){

@@ -13,11 +13,11 @@ public class TvServerService extends BaseService {
 
     private static final String SELECT_EQUIP_CODE = "equipCode";
 
-    private static final String TV_PROTOCOL = "bulbProtocol";
+    private static final String TV_PROTOCOL = "tvProtocol";
 
     private String mTvProtocol;
 
-    private String mEquipCode;
+
 
     public static void Launch(Context context, String equipCode, String tvProtocol){
         Intent intent = new Intent(context, TvServerService.class);

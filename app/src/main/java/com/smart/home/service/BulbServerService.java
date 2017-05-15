@@ -14,8 +14,14 @@ import java.util.*;
 
 
 
-public class BulbServerService extends BaseService
-{
+public class BulbServerService extends Service {
+
+	public static ArrayList<Socket> socketList = new ArrayList<Socket>();
+	protected Socket s;
+
+	protected static final String SELECT_EQUIP_CODE = "equipCode";
+
+	protected String mEquipCode;
 
 	private static final String BULB_PROTOCOL = "bulbProtocol";
 
@@ -33,6 +39,11 @@ public class BulbServerService extends BaseService
 		context.startService(intent);
 	}
 
+	public static void Launch(Context context){
+		Intent intent = new Intent(context, BulbServerService.class);
+		context.startService(intent);
+	}
+
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -45,14 +56,30 @@ public class BulbServerService extends BaseService
 	@Override
 	public void onCreate() {
 		super.onCreate();
-        try {
-            new Thread(new ServerThread(s, mEquipCode, mBulbProtocol)).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(networkTask).start();
     }
 
-    @Override
+	Runnable networkTask = new Runnable() {
+
+		@Override
+		public void run() {
+			try {
+				ServerSocket ss =  new ServerSocket(8080);
+				while (true) {
+					s = ss.accept();
+					socketList.add(s);
+					if (s != null) {
+						new Thread(new ServerThread(s, mEquipCode)).start();
+					}
+				}
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	};
+
+
+	@Override
     public void onDestroy() {
         super.onDestroy();
     }

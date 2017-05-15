@@ -18,6 +18,12 @@
     <color name="black">#000000</color>
     <color name="text_color">#303030</color>
 
+    <!--launcherView need-->
+    <color name="load_red">#fa007a</color>
+    <color name="load_purple">#935fe7</color>
+    <color name="load_yellow">#f9b11f</color>
+    <color name="load_blue">#009cfa</color>Ω
+
     <!-- version 3.0.0 -->
     <!--<color name="a">#FFff8300</color>-->
     <color name="a">#FFC200</color>

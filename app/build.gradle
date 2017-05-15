@@ -83,6 +83,8 @@ dependencies {
     compile files('build/intermediates/exploded-aar/retrofit-1.9.0.jar')
     compile files('D:/SmartHome/build/generated/retrofit-1.9.0.jar')
     compile files('D:/SmartHome/build/generated/retrofit-mock-1.9.0.jar')
+//    compile project(':library')
+//    compile project(path: ':zxinglite')
     testCompile 'junit:junit:4.12'
 }
 

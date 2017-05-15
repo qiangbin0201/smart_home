@@ -3,6 +3,8 @@ package com.smart.home.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.ConsumerIrManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,6 +19,8 @@ import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.presenter.InfraredPresenter;
+import com.smart.home.presenter.ServerThread;
 import com.smart.home.service.BulbServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -98,17 +102,17 @@ public class BulbControlActivity extends BaseActivity {
                         ivBulb.setImageResource(R.drawable.bulb_on);
                         isEquipOpen = true;
 
-                        communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++);
+                        communicationSchema(0x111, BULB_ON, current_brightness++);
                     } else {
                         ivBulb.setImageResource(R.drawable.bulb_off);
                         isEquipOpen = false;
 
-                        communicationSchema(BulbProtocol.BULB_OFF, null, -1);
+                        communicationSchema(0x112, null, -1);
                     }
                     break;
                 case R.id.iv_brightness_up:
                     if (isEquipOpen()) {
-                        communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
+                        communicationSchema(0x113, BULB_ON, current_brightness++);
                     }
                     break;
 
@@ -119,14 +123,16 @@ public class BulbControlActivity extends BaseActivity {
 //                        ToastUtil.showBottom(this, getString(R.string.please_open_bulb));
 //                    }
                     if (isEquipOpen()){
-                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+//                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+                        communicationSchema(0x114, BULB_ON, current_brightness--);
                     }
                     break;
                 default:
                     break;
             }
+        }else {
+            ToastUtil.showBottom(this, getString(R.string.please_select_equip));
         }
-        ToastUtil.showBottom(this, getString(R.string.please_select_equip));
 
     }
 
@@ -143,7 +149,9 @@ public class BulbControlActivity extends BaseActivity {
 
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);
-
+        if(mSchema!= null && mSchema.equals(LOCAL_NETWORK)){
+            BulbServerService.Launch(this);
+        }
         mEquipPositionList = new ArrayList<>();
         mEquipPositionList.clear();
         list = EquipDataPresenter.getInstance().queryUserList(TOOLBAR_TITLE);
@@ -153,10 +161,11 @@ public class BulbControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(String bulbProtocol, String bulbState, int brightness){
+    private void communicationSchema(int bulbProtocol, String bulbState, int brightness){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                BulbServerService.Launch(this, mSelectEquipCode, bulbProtocol);
+                ServerThread.rvHandler.sendEmptyMessage(bulbProtocol);
+//                BulbServerService.Launch(this, mSelectEquipCode, bulbProtocol);
             }else if(mSchema.equals(SERVER)) {
                 addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, bulbState, brightness)
                         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
@@ -169,6 +178,10 @@ public class BulbControlActivity extends BaseActivity {
 
             }else {
                 //红外线
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        InfraredPresenter.getInstance(getBaseContext()).transmit(38000,null);
+                    }
             }
         }
     }
@@ -183,14 +196,14 @@ public class BulbControlActivity extends BaseActivity {
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
-            addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-                initBulbData(r.data);
-                return;
-            }, e -> {
-                e.printStackTrace();
-
-            }));
+//            addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1)
+//                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+//                initBulbData(r.data);
+//                return;
+//            }, e -> {
+//                e.printStackTrace();
+//
+//            }));
         }
     };
 

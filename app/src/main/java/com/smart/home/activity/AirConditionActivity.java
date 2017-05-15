@@ -3,6 +3,7 @@ package com.smart.home.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.ConsumerIrManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.service.BulbServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -101,7 +103,8 @@ public class AirConditionActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-//        ConsumerIrManager IR = (ConsumerIrManager)getSystemService(CONSUMER_IR_SERVICE);
+        ConsumerIrManager IR = (ConsumerIrManager)getSystemService(CONSUMER_IR_SERVICE);
+//        IR.transmit();
 
 
     }
@@ -109,6 +112,9 @@ public class AirConditionActivity extends BaseActivity {
 
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);
+        if(mSchema.equals(LOCAL_NETWORK)){
+            BulbServerService.Launch(this);
+        }
         mEquipPositionList = new ArrayList<>();
         mEquipPositionList.clear();
         list = EquipDataPresenter.getInstance().queryUserList(TOOLBAR_TITLE);

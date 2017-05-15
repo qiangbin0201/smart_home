@@ -37,4 +37,6 @@
     <string name="please_open_equip">请先打开设备</string>
     <string name="please_open_tv">请先打开电视</string>
     <string name="please_open_air_condition">请先打开空调</string>
+    <string name="delete_sucess">删除成功</string>
+    <string name="control_equip">控制对象</string>
 </resources>

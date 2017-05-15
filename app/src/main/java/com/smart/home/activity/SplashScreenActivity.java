@@ -25,6 +25,7 @@ public class SplashScreenActivity extends BaseActivity {
 
     private ImageView mSplashImage;
 
+
     private static final int[] SPLASH_ARRAY = {
             R.drawable.splash0,
             R.drawable.splash1,

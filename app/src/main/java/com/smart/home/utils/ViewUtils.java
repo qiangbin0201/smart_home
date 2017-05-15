@@ -493,12 +493,6 @@ public class ViewUtils {
      * @param space_right
      * @return
      */
-//    public static int[] setImageWH(Context context, int stander_w, int stander_h, int num, int space_image, int space_left, int space_right) {
-//        int wh[] = new int[2];//0:w, 1:h
-//        wh[0] = (getScreenWH(context)[0] - Utils.dp2px(context, space_left + space_right) - space_image * (num - 1)) / num;
-//        wh[1] = wh[0] * stander_h / stander_w;
-//        return wh;
-//
 //    }
 
     /**
@@ -519,7 +513,6 @@ public class ViewUtils {
 //            return setImageWH(context, stander_w, stander_h, num, space_image, space_left, space_right);
 //        } else {
 //            int wh[] = new int[2];//0:w, 1:h
-//            wh[0] = (getScreenWH(context)[0] - offsetLength - Utils.dp2px(context, space_left + space_right) - space_image * (num - 1)) / num;
 //            wh[1] = wh[0] * stander_h / stander_w;
 //            return wh;
 //        }

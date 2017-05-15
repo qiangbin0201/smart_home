@@ -30,16 +30,25 @@ public class BaseService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        try {
-            ServerSocket ss =  new ServerSocket(30000);
-            while (true) {
-                s = ss.accept();
-                socketList.add(s);
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+       // new Thread(networkTask).start();
+
     }
+
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                ServerSocket ss =  new ServerSocket(8080);
+                while (true) {
+                    s = ss.accept();
+                    socketList.add(s);
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     public void onDestroy() {

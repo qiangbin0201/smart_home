@@ -76,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected boolean isEquipOpen = false;
 
-    protected static final String INFRARED = "红外线";
+    protected static final String INFRARED = "红外";
 
     protected List<EquipData> list;
 

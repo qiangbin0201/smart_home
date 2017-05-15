@@ -7,13 +7,7 @@
    >
     <TextView
         android:id="@+id/tv_equip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_alignParentRight="true"
-        android:text="控制对象"
-        android:layout_margin="20dp"
-        android:textSize="18sp" />
+        style="@style/ControlEquipTextView"/>
 
     <LinearLayout
         android:layout_width="match_parent"

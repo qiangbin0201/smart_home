@@ -14,6 +14,7 @@ import com.smart.home.model.EquipData;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,6 +192,7 @@ public class MyEquipActivity extends BaseActivity {
                 List<Equip> list = mEquipListAdapter.getSelectToDeleteList();
                 mEquipListAdapter.getEquipList().removeAll(list);
                 list.clear();
+                ToastUtil.showSuccess(this, getString(R.string.delete_sucess));
                 if(mEquipListAdapter.getEquipList().size()>0){
                     mTvManager.setVisibility(View.VISIBLE);
                 }else {

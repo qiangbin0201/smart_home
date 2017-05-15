@@ -82,6 +82,10 @@ public class TvControlActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+//        mSchema = getIntent().getStringExtra(SCHEMA);
+//        if(mSchema.equals(INFRARED)){
+//
+//        }
         EquipDataPresenter.getInstance().initDbHelp(this);
         initData();
     }
@@ -138,9 +142,10 @@ public class TvControlActivity extends BaseActivity {
                 default:
                     break;
             }
-        }
+        }else {
 
-        ToastUtil.showBottom(this, getString(R.string.please_select_equip));
+            ToastUtil.showBottom(this, getString(R.string.please_select_equip));
+        }
     }
 
     private void initData() {

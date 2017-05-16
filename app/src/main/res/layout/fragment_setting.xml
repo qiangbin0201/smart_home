@@ -87,5 +87,6 @@
             app:titleD="@string/person_text_current_version">
 
         </com.smart.home.View.SettingItemView>
+
     </LinearLayout>
 </ScrollView>

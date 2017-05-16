@@ -55,7 +55,7 @@ dependencies {
     //    compile "com.android.support:appcompat-v7:${SUPPORT_V4_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_V4_VERSION}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-//    compile 'com.android.support:appcompat-v7:24.2.1'
+    //    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
@@ -69,22 +69,20 @@ dependencies {
     compile 'io.reactivex:rxjava-async-util:0.21.0'
     //    compile 'cn.carbs.android:AutoZoomInImageView:1.0.0'
     //zxing依赖
-    compile 'com.google.zxing:core:3.2.1'
-    compile 'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar'
-    compile 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
-    //打开图库
-    compile 'cn.bingoogolapple:bga-photopicker:1.2.3@aar'
-    compile 'cn.bingoogolapple:bga-adapter:1.1.8@aar'
-
-    compile'org.greenrobot:greendao:3.1.0'
-    compile'org.greenrobot:greendao-generator:3.1.0'
-
+//    compile 'com.google.zxing:core:3.2.1'
+//    compile 'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar'
+//    compile 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
+//    //打开图库
+//    compile 'cn.bingoogolapple:bga-photopicker:1.2.3@aar'
+//    compile 'cn.bingoogolapple:bga-adapter:1.1.8@aar'
+    compile 'org.greenrobot:greendao:3.1.0'
+    compile 'org.greenrobot:greendao-generator:3.1.0'
     compile files('build/intermediates/exploded-aar/retrofit-mock-1.9.0.jar')
     compile files('build/intermediates/exploded-aar/retrofit-1.9.0.jar')
     compile files('D:/SmartHome/build/generated/retrofit-1.9.0.jar')
     compile files('D:/SmartHome/build/generated/retrofit-mock-1.9.0.jar')
-//    compile project(':library')
-//    compile project(path: ':zxinglite')
+    //    compile project(':library')
+    compile project(path: ':zxinglite')
     testCompile 'junit:junit:4.12'
 }
 

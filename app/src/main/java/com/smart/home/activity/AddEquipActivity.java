@@ -23,10 +23,13 @@ import android.widget.TextView;
 import com.google.zxing.Result;
 //import com.google.zxing.client.android.AutoScannerView;
 //import com.google.zxing.client.android.BaseCaptureActivity;
+import com.google.zxing.client.android.AutoScannerView;
+import com.google.zxing.client.android.BaseCaptureActivity;
 import com.smart.home.R;
 import com.smart.home.model.EquipData;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.utils.ToastUtil;
 
 import android.view.View;
 import android.widget.Toast;
@@ -34,15 +37,12 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bingoogolapple.photopicker.activity.BGAPhotoPickerActivity;
-import cn.bingoogolapple.qrcode.core.QRCodeView;
-import cn.bingoogolapple.qrcode.zxing.QRCodeDecoder;
 
 /**
  * Created by lenovo on 2017/4/21.
  */
 
-public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegate {
+public class AddEquipActivity extends BaseCaptureActivity  {
 
     private static final String TOOLBAR_TITLE = "添加设备";
 
@@ -55,10 +55,11 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
     private Spinner mSpinner;
 
-    private SurfaceView surfaceView;
-//    private AutoScannerView autoScannerView;
+    private boolean isScanSucess = false;
 
-//    private QRCodeView mQRCodeView;
+    private SurfaceView surfaceView;
+    private AutoScannerView autoScannerView;
+
 
     @BindView(R.id.ll_scan)
     LinearLayout llScan;
@@ -88,9 +89,9 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
         //初始化数据库
         EquipDataPresenter.getInstance().initDbHelp(this);
-//        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-//        autoScannerView = (AutoScannerView) findViewById(R.id.autoscanner_view);
-        //mQRCodeView = (QRCodeView) findViewById(R.id.zxingview);
+        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        autoScannerView = (AutoScannerView) findViewById(R.id.autoscanner_view);
+//        mQRCodeView = (QRCodeView) findViewById(R.id.zxingview);
         mSpinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.view_spinner_item, equipType);
         mSpinner.setAdapter(adapter);
@@ -124,12 +125,19 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_code:
+                if(isScanSucess){
+                    ToastUtil.showSuccess(this,"扫描成功");
+                }else {
                 isScanView = true;
                 mSpinner.setVisibility(View.GONE);
                 llScan.setVisibility(View.GONE);
                 etEquipPosition.setVisibility(View.GONE);
                 btnAddEquip.setVisibility(View.GONE);
-//                autoScannerView.setCameraManager(cameraManager);
+                autoScannerView.setVisibility(View.VISIBLE);
+                surfaceView.setVisibility(View.VISIBLE);
+                autoScannerView.setCameraManager(cameraManager);
+                }
+
 //                mQRCodeView.setVisibility(View.VISIBLE);
 //                //委托代理完成扫描
 //                mQRCodeView.startCamera();
@@ -151,21 +159,21 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
 
     }
 
-    @Override
-    public void onScanQRCodeSuccess(String result) {
-        vibrate();
-        mSpinner.setVisibility(View.GONE);
-        llScan.setVisibility(View.VISIBLE);
-        etEquipPosition.setVisibility(View.VISIBLE);
-        btnAddEquip.setVisibility(View.VISIBLE);
-        tvCode.setText(result);
-    }
-
-    @Override
-    public void onScanQRCodeOpenCameraError() {
-
-
-    }
+//    @Override
+//    public void onScanQRCodeSuccess(String result) {
+//        vibrate();
+//        mSpinner.setVisibility(View.GONE);
+//        llScan.setVisibility(View.VISIBLE);
+//        etEquipPosition.setVisibility(View.VISIBLE);
+//        btnAddEquip.setVisibility(View.VISIBLE);
+//        tvCode.setText(result);
+//    }
+//
+//    @Override
+//    public void onScanQRCodeOpenCameraError() {
+//
+//
+//    }
 
     private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -180,6 +188,8 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
                 llScan.setVisibility(View.VISIBLE);
                 etEquipPosition.setVisibility(View.VISIBLE);
                 btnAddEquip.setVisibility(View.VISIBLE);
+                autoScannerView.setVisibility(View.GONE);
+                surfaceView.setVisibility(View.GONE);
 //                mQRCodeView.setVisibility(View.GONE);
                 isScanView = false;
                 return true;
@@ -198,21 +208,25 @@ public class AddEquipActivity extends BaseActivity implements QRCodeView.Delegat
         super.onDestroy();
     }
 
-//    @Override
-//    public SurfaceView getSurfaceView() {
-//        return  (surfaceView == null) ? (SurfaceView) findViewById(R.id.preview_view) : surfaceView;
-//    }
-//
-//    @Override
-//    public void dealDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-//        playBeepSoundAndVibrate(true, false);
-//        vibrate();
-//        mSpinner.setVisibility(View.GONE);
-//        llScan.setVisibility(View.VISIBLE);
-//        etEquipPosition.setVisibility(View.VISIBLE);
-//        btnAddEquip.setVisibility(View.VISIBLE);
-//        tvCode.setText(rawResult.getText());
-//        Toast.makeText(this, rawResult.getText(), Toast.LENGTH_LONG).show();
-//
-//    }
+    @Override
+    public SurfaceView getSurfaceView() {
+        return  (surfaceView == null) ? (SurfaceView) findViewById(R.id.preview_view) : surfaceView;
+    }
+
+    @Override
+    public void dealDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
+        playBeepSoundAndVibrate(true, false);
+        vibrate();
+        surfaceView.setVisibility(View.GONE);
+        autoScannerView.setVisibility(View.GONE);
+        mSpinner.setVisibility(View.GONE);
+        llScan.setVisibility(View.VISIBLE);
+        etEquipPosition.setVisibility(View.VISIBLE);
+        btnAddEquip.setVisibility(View.VISIBLE);
+        tvCode.setText(rawResult.getText());
+        Toast.makeText(this, rawResult.getText(), Toast.LENGTH_LONG).show();
+        isScanSucess = true;
+        reScan();
+
+    }
 }

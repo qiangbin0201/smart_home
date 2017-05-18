@@ -36,7 +36,9 @@
             android:name=".activity.BulbControlActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+
+            />
         <activity
             android:name=".activity.AddEquipActivity"
             android:launchMode="singleTask"
@@ -69,7 +71,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <service
-            android:name=".service.BulbServerService"
+            android:name=".service.ServerService"
             android:enabled="true" />
         <service
             android:name=".service.TvServerService"
@@ -86,7 +88,16 @@
         <service
             android:name=".service.FanServerService"
             android:enabled="false"
-            android:exported="true"></service>
+            android:exported="true"/>
+
+        <!--<receiver android:name= ".activity.BulbControlActivity$MyReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name= "com.smart.home.broadcast"/>-->
+            <!--</intent-filter>-->
+
+            <!--</receiver>-->
+
     </application>
+
 
 </manifest>

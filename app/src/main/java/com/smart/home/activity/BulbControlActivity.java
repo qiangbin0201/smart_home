@@ -1,11 +1,15 @@
 package com.smart.home.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.ConsumerIrManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -15,13 +19,14 @@ import android.view.View;
 import com.smart.home.R;
 import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.EquipData;
+import com.smart.home.model.HandlerProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.presenter.InfraredPresenter;
 import com.smart.home.presenter.ServerThread;
-import com.smart.home.service.BulbServerService;
+import com.smart.home.service.ServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.ToastUtil;
@@ -42,7 +47,7 @@ import rx.schedulers.Schedulers;
 
 public class BulbControlActivity extends BaseActivity {
 
-    private  static final String TOOLBAR_TITLE = "电灯";
+    private static final String TOOLBAR_TITLE = "电灯";
 
     private Spinner spinner;
 
@@ -57,7 +62,14 @@ public class BulbControlActivity extends BaseActivity {
     private static final String BULB_ON = "bulb_on";
 
 
+
     private String mSelectEquipCode;
+
+    private MyReceiver mMyRervice;
+
+    public static Handler mUiHandler;
+
+
 
     @BindView(R.id.tv_equip)
     TextView tvEquip;
@@ -87,50 +99,64 @@ public class BulbControlActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
-        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnclickListener);
+        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE, R.drawable.icon_more, mBarOnclickListener);
         setContentView(R.layout.activity_bulb);
+
+        initBroadcast();
 
         ButterKnife.bind(this);
     }
 
+    //注册广播
+    private void initBroadcast() {
+        mMyRervice = new MyReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServerService.REGISTER_BROADCAST);
+        registerReceiver(mMyRervice, filter);
+    }
+
     @OnClick({R.id.iv_bulb, R.id.iv_brightness_up, R.id.iv_brightness_down})
     public void onClick(View view) {
-        if(isSelectEquip) {
-            switch (view.getId()) {
-                case R.id.iv_bulb:
-                    if (!isEquipOpen) {
-                        ivBulb.setImageResource(R.drawable.bulb_on);
-                        isEquipOpen = true;
+        if (isSelectEquip) {
+            if(isNetConnect) {
+                switch (view.getId()) {
+                    case R.id.iv_bulb:
+                        if (!isEquipOpen) {
+                            ivBulb.setImageResource(R.drawable.bulb_on);
+                            isEquipOpen = true;
 
-                        communicationSchema(0x111, BULB_ON, current_brightness++);
-                    } else {
-                        ivBulb.setImageResource(R.drawable.bulb_off);
-                        isEquipOpen = false;
+                            communicationSchema(HandlerProtocol.BULB_ON, BULB_ON, current_brightness++);
+                        } else {
+                            ivBulb.setImageResource(R.drawable.bulb_off);
+                            isEquipOpen = false;
 
-                        communicationSchema(0x112, null, -1);
-                    }
-                    break;
-                case R.id.iv_brightness_up:
-                    if (isEquipOpen()) {
-                        communicationSchema(0x113, BULB_ON, current_brightness++);
-                    }
-                    break;
+                            communicationSchema(HandlerProtocol.BULB_OFF, null, -1);
+                        }
+                        break;
+                    case R.id.iv_brightness_up:
+                        if (isEquipOpen()) {
+                            communicationSchema(HandlerProtocol.BULB_BRIGHTNESS_UP, BULB_ON, current_brightness++);
+                        }
+                        break;
 
-                case R.id.iv_brightness_down:
+                    case R.id.iv_brightness_down:
 //                    if (!isBulbOff) {
 //                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
 //                    } else {
 //                        ToastUtil.showBottom(this, getString(R.string.please_open_bulb));
 //                    }
-                    if (isEquipOpen()){
+                        if (isEquipOpen()) {
 //                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
-                        communicationSchema(0x114, BULB_ON, current_brightness--);
-                    }
-                    break;
-                default:
-                    break;
+                            communicationSchema(HandlerProtocol.BULB_BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }else {
+                ToastUtil.showFailed(this, getString(R.string.local_net_not_connect));
             }
-        }else {
+        } else {
             ToastUtil.showBottom(this, getString(R.string.please_select_equip));
         }
 
@@ -149,8 +175,8 @@ public class BulbControlActivity extends BaseActivity {
 
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);
-        if(mSchema!= null && mSchema.equals(LOCAL_NETWORK)){
-            BulbServerService.Launch(this);
+        if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+            ServerService.Launch(this, mSelectEquipCode);
         }
         mEquipPositionList = new ArrayList<>();
         mEquipPositionList.clear();
@@ -161,29 +187,42 @@ public class BulbControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(int bulbProtocol, String bulbState, int brightness){
-        if(mSchema != null){
-            if(mSchema.equals(LOCAL_NETWORK)){
+    private void communicationSchema(int bulbProtocol, String bulbState, int brightness) {
+        if (mSchema != null) {
+            if (mSchema.equals(LOCAL_NETWORK)) {
                 ServerThread.rvHandler.sendEmptyMessage(bulbProtocol);
 //                BulbServerService.Launch(this, mSelectEquipCode, bulbProtocol);
-            }else if(mSchema.equals(SERVER)) {
+            } else if (mSchema.equals(SERVER)) {
                 addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, bulbState, brightness)
                         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-                    initBulbData(r.data);
-                    return;
-                }, e -> {
-                    e.printStackTrace();
+                            initBulbData(r.data);
+                            return;
+                        }, e -> {
+                            e.printStackTrace();
 
-                }));
+                        }));
 
-            }else {
+            } else {
                 //红外线
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        InfraredPresenter.getInstance(getBaseContext()).transmit(38000,null);
-                    }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    InfraredPresenter.getInstance(getBaseContext()).transmit(38000, null);
+                }
             }
         }
+    }
+
+    private void isNetConnect() {
+        mUiHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == HandlerProtocol.NET_CONNECT) {
+                    isNetConnect = true;
+                } else {
+                    isNetConnect = false;
+                }
+            }
+        };
     }
 
 
@@ -192,7 +231,7 @@ public class BulbControlActivity extends BaseActivity {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             tvEquip.setText(mEquipPositionList.get(i));
-            List <EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
+            List<EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
@@ -207,7 +246,7 @@ public class BulbControlActivity extends BaseActivity {
         }
     };
 
-    private void initBulbData(StateDetail stateDetail){
+    private void initBulbData(StateDetail stateDetail) {
         current_brightness = stateDetail.brightness;
 
     }
@@ -215,6 +254,13 @@ public class BulbControlActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+        }
     }
 }
 

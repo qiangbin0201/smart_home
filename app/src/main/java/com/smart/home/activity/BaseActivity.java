@@ -4,7 +4,11 @@ package com.smart.home.activity;
  * Created by lenovo on 2017/4/4.
  */
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,6 +33,7 @@ import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.service.ServerService;
 import com.smart.home.utils.ActivityStack;
 import com.smart.home.utils.ToastUtil;
 import com.smart.home.utils.Utils;
@@ -72,11 +77,15 @@ public class BaseActivity extends AppCompatActivity {
 
     protected static final String SERVER = "服务器";
 
+    protected static final String IS_NET_CONNECT = "isNetConnect";
+
     protected boolean isSelectEquip = false;
 
     protected boolean isEquipOpen = false;
 
     protected static final String INFRARED = "红外";
+
+    protected boolean isNetConnect = false;
 
     protected List<EquipData> list;
 
@@ -87,6 +96,8 @@ public class BaseActivity extends AppCompatActivity {
     protected WeakRefHandler mWeakRefHandler;
 
     public Bus mBus;
+
+    protected AudioManager mgr;
     /**
      * 最小的点击延时时间，单位：毫秒
      */
@@ -119,6 +130,10 @@ public class BaseActivity extends AppCompatActivity {
 
     protected static final String DIALOG_TITLE = "请选择设备";
 
+    protected SoundPool mSoundPool;
+
+    protected int mSound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +156,13 @@ public class BaseActivity extends AppCompatActivity {
 
 
     private boolean mIsPageLoaded = true;
+
+    protected void initKeyTone() {
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 5);
+        mSound = mSoundPool.load(this, R.raw.beep, 1);
+        mgr = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
 
 
 
@@ -187,7 +209,6 @@ public class BaseActivity extends AppCompatActivity {
             return false;
         }
     }
-
 
 //    @Override
 //    public boolean dispatchTouchEvent(MotionEvent ev) {

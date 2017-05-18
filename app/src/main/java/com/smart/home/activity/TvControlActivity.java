@@ -1,8 +1,12 @@
 package com.smart.home.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,12 +15,14 @@ import android.widget.TextView;
 
 import com.smart.home.R;
 import com.smart.home.model.EquipData;
+import com.smart.home.model.HandlerProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
-import com.smart.home.service.BulbServerService;
+import com.smart.home.presenter.ServerThread;
+import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -30,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
 
 /**
  * Created by qiangbin on 2017/4/25.
@@ -47,6 +54,8 @@ public class TvControlActivity extends BaseActivity {
 
     private String mSchema;
 
+    private MyReceiver mMyRervice;
+
 
     private List<EquipData> list;
 
@@ -55,7 +64,6 @@ public class TvControlActivity extends BaseActivity {
     private int current_channel;
 
     private int current_volume;
-
 
     @BindView(R.id.tv_equip)
     TextView tvEquip;
@@ -69,7 +77,6 @@ public class TvControlActivity extends BaseActivity {
     ImageView ivChannelUp;
     @BindView(R.id.iv_channel_down)
     ImageView ivChannelDown;
-
 
 
 
@@ -99,53 +106,79 @@ public class TvControlActivity extends BaseActivity {
         setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnClickListener);
         setContentView(R.layout.activity_tv);
 
+        initBroadcast();
+
+        initKeyTone();
+
         ButterKnife.bind(this);
 
     }
 
+
+
     @OnClick({R.id.iv_tv_off, R.id.iv_sound_up, R.id.iv_sound_down, R.id.iv_channel_up, R.id.iv_channel_down})
     public void onClick(View view){
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         if(isSelectEquip) {
-            switch (view.getId()) {
-                case R.id.iv_tv_off:
-                    if(!isEquipOpen) {
-                        communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume);
-                        isEquipOpen = true;
-                    }else {
+            if(isNetConnect) {
+                switch (view.getId()) {
+                    case R.id.iv_tv_off:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (!isEquipOpen) {
+                            ivTvOff.setImageResource(R.drawable.on);
+                            communicationSchema(HandlerProtocol.TV_ON, TV_ON, current_channel, current_volume);
+                            isEquipOpen = true;
+                        } else {
+                            ivTvOff.setImageResource(R.drawable.off);
+                            communicationSchema(HandlerProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
+                            isEquipOpen = false;
 
-                        communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
-                        isEquipOpen = false;
+                        }
 
-                    }
-
-                    break;
-                case R.id.iv_sound_up:
-                    if (isEquipOpen()) {
-                        communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
-                    }
-                    break;
-                case R.id.iv_sound_down:
-                    if(isEquipOpen()) {
-                        communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
-                    }
-                    break;
-                case R.id.iv_channel_up:
-                    if(isEquipOpen()) {
-                        communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
-                    }
-                    break;
-                case R.id.iv_channel_down:
-                    if(isEquipOpen()) {
-                        communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
-                    }
-                    break;
-                default:
-                    break;
+                        break;
+                    case R.id.iv_sound_up:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(HandlerProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
+                        }
+                        break;
+                    case R.id.iv_sound_down:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(HandlerProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
+                        }
+                        break;
+                    case R.id.iv_channel_up:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(HandlerProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
+                        }
+                        break;
+                    case R.id.iv_channel_down:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(HandlerProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }else {
+                ToastUtil.showFailed(this, getString(R.string.local_net_not_connect));
             }
         }else {
-
             ToastUtil.showBottom(this, getString(R.string.please_select_equip));
         }
+    }
+
+    //注册广播
+    private void initBroadcast() {
+        mMyRervice = new MyReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServerService.REGISTER_BROADCAST);
+        registerReceiver(mMyRervice, filter);
     }
 
     private void initData() {
@@ -160,10 +193,10 @@ public class TvControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume){
+    private void communicationSchema(int tvProtocol, String TvState, int channel, int volume){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                TvServerService.Launch(this, mSelectEquipCode, tvProtocol);
+                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
             }else if(mSchema.equals(SERVER)){
                 addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, TvState, channel, volume).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initTvData(r.data);
@@ -199,24 +232,44 @@ public class TvControlActivity extends BaseActivity {
             tvEquip.setText(mEquipPositionList.get(i));
             List <EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
-
             isSelectEquip = true;
-            addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, null, -1, -1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-                initTvData(r.data);
-                return;
-            }, e -> {
-                e.printStackTrace();
 
-            }));
+            if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                ServerService.Launch(getBaseContext(), mSelectEquipCode);
+            }else if(mSchema != null && mSchema.equals(SERVER)){
+                initServer();
+                isNetConnect = true;
+            }else {
+                isNetConnect = true;
+            }
+
         }
 
 
     };
 
+    private void initServer() {
+        addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, null, -1, -1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+            initTvData(r.data);
+            return;
+        }, e -> {
+            e.printStackTrace();
+
+        }));
+    }
+
     private void initTvData(StateDetail stateDetail) {
         current_channel = stateDetail.tv_channel;
         current_volume = stateDetail.tv_volume;
 
+    }
+
+    public class MyReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+        }
     }
 
 

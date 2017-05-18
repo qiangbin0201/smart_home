@@ -9,9 +9,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/ll_container"
+                android:layout_width="match_parent"
+                android:layout_height="44dp">
+
+                <TextView
+                    android:id="@+id/tv_left_button"
+                    style="@style/TitleBarActionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:drawableLeft="@drawable/img_title_back"
+                    android:drawablePadding="3dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/margin_page"
+                    android:paddingRight="@dimen/margin_page"
+                    android:text="返回" />
+
+                <View
+                    android:id="@+id/divider_toolbar_content"
+                    style="@style/Line.Horizontal.Divider.Toolbar"
+                    android:layout_alignParentBottom="true" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/TitleBarText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/add_equip_text"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+
         <LinearLayout
             android:id="@+id/ll_scan"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"

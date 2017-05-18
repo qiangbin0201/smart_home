@@ -3,9 +3,12 @@ package com.smart.home.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Message;
 
+import com.smart.home.model.HandlerProtocol;
 import com.smart.home.presenter.ServerThread;
 
 import java.net.*;
@@ -14,41 +17,46 @@ import java.util.*;
 
 
 
-public class BulbServerService extends Service {
+public class ServerService extends Service {
 
 	public static ArrayList<Socket> socketList = new ArrayList<Socket>();
 	protected Socket s;
 
 	protected static final String SELECT_EQUIP_CODE = "equipCode";
 
-	protected String mEquipCode;
-
 	private static final String BULB_PROTOCOL = "bulbProtocol";
 
+	private static final String IS_NET_CONNECT = "isNetConnect";
+
+	public static final String REGISTER_BROADCAST = "com.smart.home.broadcast";
+
+	protected String mEquipCode;
+
 	private String mBulbProtocol;
+
+	private Handler mUiHandler;
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
-	public static void Launch(Context context, String equipCode, String bulbProtocol){
-		Intent intent = new Intent(context, BulbServerService.class);
+	public static void Launch(Context context, String equipCode){
+		Intent intent = new Intent(context, ServerService.class);
 		intent.putExtra(SELECT_EQUIP_CODE, equipCode);
-		intent.putExtra(BULB_PROTOCOL, bulbProtocol);
 		context.startService(intent);
 	}
 
 	public static void Launch(Context context){
-		Intent intent = new Intent(context, BulbServerService.class);
+		Intent intent = new Intent(context, ServerService.class);
 		context.startService(intent);
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		mEquipCode = intent.getStringExtra(SELECT_EQUIP_CODE);
-        mBulbProtocol = intent.getStringExtra(BULB_PROTOCOL);
+//		mEquipCode = intent.getStringExtra(SELECT_EQUIP_CODE);
+//        mBulbProtocol = intent.getStringExtra(BULB_PROTOCOL);
 
 	}
 
@@ -56,7 +64,22 @@ public class BulbServerService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-        new Thread(networkTask).start();
+		new Thread(networkTask).start();
+		mUiHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				Intent sendIntent = new Intent();
+				sendIntent.setAction(REGISTER_BROADCAST);
+				if(msg.what == HandlerProtocol.NET_CONNECT){
+					sendIntent.putExtra(IS_NET_CONNECT, true);
+					sendBroadcast(sendIntent);
+				}else if(msg.what == HandlerProtocol.NET_NOT_CONNECT){
+					sendIntent.putExtra(IS_NET_CONNECT, false);
+					sendBroadcast(sendIntent);
+				}
+			}
+		};
+
     }
 
 	Runnable networkTask = new Runnable() {
@@ -68,8 +91,9 @@ public class BulbServerService extends Service {
 				while (true) {
 					s = ss.accept();
 					socketList.add(s);
+
 					if (s != null) {
-						new Thread(new ServerThread(s, mEquipCode)).start();
+						new Thread(new ServerThread(s, mEquipCode, mUiHandler)).start();
 					}
 				}
 			}catch (IOException e){

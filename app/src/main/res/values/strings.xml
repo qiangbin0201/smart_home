@@ -39,4 +39,6 @@
     <string name="please_open_air_condition">请先打开空调</string>
     <string name="delete_sucess">删除成功</string>
     <string name="control_equip">控制对象</string>
+    <string name="local_net_not_connect">设备尚未连接</string>
+    <string name="add_equip_text">添加设备</string>
 </resources>

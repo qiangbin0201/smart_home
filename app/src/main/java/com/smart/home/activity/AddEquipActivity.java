@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -71,6 +72,10 @@ public class AddEquipActivity extends BaseCaptureActivity  {
     EditText etEquipPosition;
     @BindView(R.id.btn_add_equip)
     Button btnAddEquip;
+    @BindView(R.id.tv_left_button)
+    TextView tvLeftButton;
+    @BindView(R.id.ll_container)
+    RelativeLayout llContainer;
 
     public static void launch(Context context) {
         Intent intent = new Intent(context, AddEquipActivity.class);
@@ -121,7 +126,7 @@ public class AddEquipActivity extends BaseCaptureActivity  {
         super.onStop();
     }
 
-    @OnClick({R.id.iv_code, R.id.btn_add_equip})
+    @OnClick({R.id.iv_code, R.id.btn_add_equip, R.id.tv_left_button})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_code:
@@ -129,7 +134,8 @@ public class AddEquipActivity extends BaseCaptureActivity  {
                     ToastUtil.showSuccess(this,"扫描成功");
                 }else {
                 isScanView = true;
-                mSpinner.setVisibility(View.GONE);
+                llContainer.setVisibility(View.GONE);
+//                mSpinner.setVisibility(View.GONE);
                 llScan.setVisibility(View.GONE);
                 etEquipPosition.setVisibility(View.GONE);
                 btnAddEquip.setVisibility(View.GONE);
@@ -151,6 +157,9 @@ public class AddEquipActivity extends BaseCaptureActivity  {
 //                String equipCode = tvCode.getText().toString();
 //                if(!TextUtils.isEmpty(equipCode) && !TextUtils.isEmpty(equipPosition))
                 EquipDataPresenter.getInstance().insertData((String) mSpinner.getSelectedItem(), etEquipPosition.getText().toString(), tvCode.getText().toString());
+                finish();
+                break;
+            case R.id.tv_left_button:
                 finish();
                 break;
             default:
@@ -185,6 +194,7 @@ public class AddEquipActivity extends BaseCaptureActivity  {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (isScanView) {
                 mSpinner.setVisibility(View.GONE);
+                llContainer.setVisibility(View.VISIBLE);
                 llScan.setVisibility(View.VISIBLE);
                 etEquipPosition.setVisibility(View.VISIBLE);
                 btnAddEquip.setVisibility(View.VISIBLE);

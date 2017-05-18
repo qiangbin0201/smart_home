@@ -43,7 +43,7 @@
         android:id="@+id/iv_sound_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/plus_sign"
+        android:background="@drawable/bg_plus_sign"
         android:layout_alignTop="@+id/iv_channel_up"
         android:layout_marginLeft="50dp"
         />
@@ -60,7 +60,7 @@
         android:id="@+id/iv_sound_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/minus_sign"
+        android:background="@drawable/bg_minus_sign"
         android:layout_alignTop="@+id/iv_channel_down"
         android:layout_alignLeft="@+id/iv_sound_up"
         />
@@ -72,8 +72,9 @@
         android:layout_marginTop="120dp"
         android:src="@drawable/arrow_up"
         android:layout_below="@+id/tv_equip"
-        android:layout_alignLeft="@+id/tv_equip"
-        android:layout_alignStart="@+id/tv_equip" />
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+         />
 
 
 </RelativeLayout>

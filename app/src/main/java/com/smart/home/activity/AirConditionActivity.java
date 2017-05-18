@@ -16,7 +16,7 @@ import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
-import com.smart.home.service.BulbServerService;
+import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -113,7 +113,7 @@ public class AirConditionActivity extends BaseActivity {
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);
         if(mSchema.equals(LOCAL_NETWORK)){
-            BulbServerService.Launch(this);
+            ServerService.Launch(this);
         }
         mEquipPositionList = new ArrayList<>();
         mEquipPositionList.clear();

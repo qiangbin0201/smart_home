@@ -37,7 +37,7 @@ import java.util.Map;
  * Created by yangxixi on 16/11/21.
  */
 
-public abstract class BaseCaptureActivity extends Activity implements SurfaceHolder.Callback {
+public abstract class BaseCaptureActivity extends Activity  implements SurfaceHolder.Callback {
 
     private static final String TAG = BaseCaptureActivity.class.getSimpleName();
 
@@ -380,6 +380,8 @@ public abstract class BaseCaptureActivity extends Activity implements SurfaceHol
             }
         }
     }
+
+
 
     /**
      * 获取SurfaceView，用于展示相机的画面，返回null直接报错，必填项。

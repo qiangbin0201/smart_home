@@ -40,7 +40,7 @@ public class AirConditionService extends BaseService {
     public void onCreate() {
         super.onCreate();
         try {
-            new Thread(new ServerThread(s, mEquipCode)).start();
+            new Thread(new ServerThread(s, mEquipCode, null)).start();
         }catch (IOException e){
             e.printStackTrace();
         }

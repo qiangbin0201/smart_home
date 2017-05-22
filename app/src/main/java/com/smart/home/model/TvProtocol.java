@@ -9,7 +9,7 @@ public class TvProtocol {
     //电视关机
     public static final String TV_OFF = "tv:00000#";
     //电视开机
-    public static final String TV_ON = "tv:10000#";
+    public static final int TV_ON = 10000;
     //音量加
     public static final String TV_SOUND_UP = "tv:11000#";
     //音量减

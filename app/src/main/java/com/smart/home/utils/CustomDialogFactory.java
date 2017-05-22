@@ -19,7 +19,7 @@ import com.smart.home.R;
 import java.util.List;
 
 /**
- * Created by 37X21=777 on 15/5/22.
+ * Created by qiangbin on 15/4/22.
  */
 public class CustomDialogFactory {
 

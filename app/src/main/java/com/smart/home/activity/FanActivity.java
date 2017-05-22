@@ -1,8 +1,11 @@
 package com.smart.home.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
@@ -16,6 +19,7 @@ import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -45,6 +49,8 @@ public class FanActivity extends BaseActivity {
     private static final String FAN_OFF = "fan_off";
 
     private String mSchema;
+
+    private MyReceiver mMyRervice;
 
     private int current_speed;
 
@@ -82,35 +88,49 @@ public class FanActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        initBroadcast();
+
+        initKeyTone();
+
     }
 
     @OnClick({R.id.iv_fan, R.id.iv_speed_up, R.id.iv_speed_down})
     public void onClick(View view){
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         if(isSelectEquip){
-            switch (view.getId()){
-                case R.id.iv_fan:
-                    if(!isEquipOpen){
-                        communicationSchema(FanProtocol.FAN_ON, FAN_ON, current_speed);
-                        isEquipOpen = true;
-                    }else {
-                        communicationSchema(FanProtocol.FAN_OFF, FAN_OFF, current_speed);
-                        isEquipOpen = false;
-                    }
+            if(isNetConnect) {
+                switch (view.getId()) {
+                    case R.id.iv_fan:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (!isEquipOpen) {
+                            communicationSchema(FanProtocol.FAN_ON, FAN_ON, current_speed);
+                            isEquipOpen = true;
+                        } else {
+                            communicationSchema(FanProtocol.FAN_OFF, FAN_OFF, current_speed);
+                            isEquipOpen = false;
+                        }
 
-                    break;
-                case R.id.iv_speed_up:
-                    if(isEquipOpen()){
-                        communicationSchema(FanProtocol.FAN_SPEED_UP, FAN_ON, current_speed++);
-                    }
-                    break;
-                case R.id.iv_speed_down:
-                    if(isEquipOpen()){
-                        communicationSchema(FanProtocol.FAN_SPEED_DOWN, FAN_ON, current_speed--);
+                        break;
+                    case R.id.iv_speed_up:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(FanProtocol.FAN_SPEED_UP, FAN_ON, current_speed++);
+                        }
+                        break;
+                    case R.id.iv_speed_down:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+                        if (isEquipOpen()) {
+                            communicationSchema(FanProtocol.FAN_SPEED_DOWN, FAN_ON, current_speed--);
 
-                    }
-                    break;
-                default:
-                    break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }else {
+                ToastUtil.showFailed(this, getString(R.string.local_net_not_connect));
             }
 
         }else {
@@ -127,6 +147,14 @@ public class FanActivity extends BaseActivity {
         for (EquipData equipData : list) {
             mEquipPositionList.add(equipData.getEquipPosition());
         }
+    }
+
+    //注册广播
+    private void initBroadcast() {
+        mMyRervice = new MyReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ServerService.REGISTER_BROADCAST);
+        registerReceiver(mMyRervice, filter);
     }
 
     private View.OnClickListener mBarOnClickListener = new View.OnClickListener() {
@@ -149,15 +177,27 @@ public class FanActivity extends BaseActivity {
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
-            addSubscription(ControlPresenter.getInstance().getFanData(mSelectEquipCode, null, -1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-                initFanData(r.data);
-                return;
-            }, e -> {
-                e.printStackTrace();
+            if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                ServerService.Launch(getBaseContext(), mSelectEquipCode);
+            }else if(mSchema != null && mSchema.equals(SERVER)){
+                initServer();
+                isNetConnect = true;
+            }else {
+                isNetConnect = true;
+            }
 
-            }));
         }
     };
+
+    private void initServer() {
+        addSubscription(ControlPresenter.getInstance().getFanData(mSelectEquipCode, null, -1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+            initFanData(r.data);
+            return;
+        }, e -> {
+            e.printStackTrace();
+
+        }));
+    }
 
     private void communicationSchema(String fanProtocol, String fanState, int speed){
         if(mSchema != null){
@@ -183,6 +223,14 @@ public class FanActivity extends BaseActivity {
         if(stateDetail != null){
             current_speed = stateDetail.speed;
 
+        }
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
         }
     }
 }

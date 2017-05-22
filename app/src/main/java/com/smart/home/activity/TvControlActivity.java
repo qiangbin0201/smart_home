@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.smart.home.ConsumerIrManagerCompat;
 import com.smart.home.R;
 import com.smart.home.model.EquipData;
 import com.smart.home.model.HandlerProtocol;
@@ -26,6 +27,7 @@ import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.InfraredTransformUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -64,6 +66,8 @@ public class TvControlActivity extends BaseActivity {
     private int current_channel;
 
     private int current_volume;
+
+    private String patternStr = "S 1 0 1 0 C";
 
     @BindView(R.id.tv_equip)
     TextView tvEquip;
@@ -208,6 +212,8 @@ public class TvControlActivity extends BaseActivity {
 
             }else {
                 //红外线
+                int [] pattern = InfraredTransformUtil.hex2time(patternStr);
+                ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
             }
         }
     }

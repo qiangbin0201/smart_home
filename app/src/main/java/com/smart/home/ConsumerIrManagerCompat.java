@@ -7,6 +7,10 @@ import android.os.Build;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class ConsumerIrManagerCompat extends ConsumerIrManager {
 
+    public static ConsumerIrManagerCompat getInstance(Context context){
+        return new ConsumerIrManagerCompat(context);
+    }
+
     private final android.hardware.ConsumerIrManager service;
 
     public ConsumerIrManagerCompat(Context context) {

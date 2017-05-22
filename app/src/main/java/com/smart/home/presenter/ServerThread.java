@@ -7,6 +7,8 @@ import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.HandlerProtocol;
 import com.smart.home.model.TvProtocol;
 import com.smart.home.service.ServerService;
+import com.smart.home.utils.RadixUtil;
+
 import java.io.*;
 import java.net.*;
 
@@ -73,6 +75,7 @@ public class ServerThread extends Thread
 					if (isSelectedEquip) {
 						if (msg.what == HandlerProtocol.BULB_ON) {
 							os.write((BulbProtocol.BULB_ON + "\n").getBytes("utf-8"));
+
 						} else if (msg.what == HandlerProtocol.BULB_OFF) {
 							os.write((BulbProtocol.BULB_OFF + "\n").getBytes("utf-8"));
 						} else if (msg.what == HandlerProtocol.BULB_BRIGHTNESS_UP) {
@@ -82,7 +85,12 @@ public class ServerThread extends Thread
 						}else if(msg.what == HandlerProtocol.TV_OFF){
 							os.write((TvProtocol.TV_OFF+ "\n").getBytes("utf-8"));
 						}else if(msg.what == HandlerProtocol.TV_ON){
-							os.write((HandlerProtocol.TV_ON + "\n").getBytes("utf-8"));
+							String temp = RadixUtil.int2hexString(TvProtocol.TV_ON);
+							os.write((TvProtocol.TV_ON+ "\n").getBytes("utf-8"));
+							os.write((temp + "\n").getBytes("ASCII"));
+							byte[] buf = RadixUtil.hexString2Bytes(temp);
+							os.write(buf);
+						//	os.write((TvProtocol.TV_ON + "\n").getBytes("utf-8"));
 						}else if(msg.what == HandlerProtocol.TV_SOUND_UP){
 							os.write((TvProtocol.TV_SOUND_UP + "\n").getBytes("utf-8"));
 						}else if(msg.what == HandlerProtocol.TV_SOUND_DOWN){

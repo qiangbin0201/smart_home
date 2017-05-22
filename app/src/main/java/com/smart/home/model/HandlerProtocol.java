@@ -30,6 +30,24 @@ public class HandlerProtocol {
 
     public static int TV_CHANNEL_DOWN = 0x210001;
 
+    public static int AIR_CONDITION_OFF = 0x300000;
 
+    public static int AIR_CONDITION_ON = 0x310000;
+
+    public static int AIR_CONDITION_TEMP_UP = 0x311000;
+
+    public static int AIR_CONDITION_TEMP_DOWN = 0x310100;
+
+    public static int AIR_CONDITION_MODE_UP = 0x310010;
+
+    public static int AIR_CONDITION_MODE_DOWN = 0x310001;
+
+    public static int FAN_OFF = 0x4000;
+
+    public static int FAN_ON = 0x4100;
+
+    public static int FAN_SPEED_UP= 0x4110;
+
+    public static int FAN_SPEED_DOWN = 0x4101;
 
 }

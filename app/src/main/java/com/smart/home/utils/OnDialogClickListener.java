@@ -3,10 +3,10 @@ package com.smart.home.utils;
 import android.app.AlertDialog;
 
 /**
- * Created by 37X21=777 on 15/5/22.
+ * Created by qiangbin on 14/4/22.
  */
 public interface OnDialogClickListener {
 
-    public void onClick(AlertDialog dialog);
+    void onClick(AlertDialog dialog);
 
 }

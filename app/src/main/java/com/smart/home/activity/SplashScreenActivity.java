@@ -22,9 +22,7 @@ public class SplashScreenActivity extends BaseActivity {
     private static final int ANIMATION_DURATION = 2000;
     private static final float SCALE_END = 1.13F;
 
-
     private ImageView mSplashImage;
-
 
     private static final int[] SPLASH_ARRAY = {
             R.drawable.splash0,
@@ -55,6 +53,8 @@ public class SplashScreenActivity extends BaseActivity {
         animateImage();
 
     }
+
+
 
     private void animateImage() {
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(mSplashImage, "scaleX", 1f, SCALE_END);
@@ -99,4 +99,9 @@ public class SplashScreenActivity extends BaseActivity {
 //            }
 //        });
 //    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

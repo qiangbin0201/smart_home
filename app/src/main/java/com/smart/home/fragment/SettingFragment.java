@@ -17,6 +17,7 @@ import com.smart.home.activity.MyEquipActivity;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.OnDialogClickListener;
+import com.smart.home.utils.ToastUtil;
 
 /**
  * Created by qiangbin on 2017/4/16.
@@ -93,8 +94,9 @@ public class SettingFragment extends BaseFragment {
                 case R.id.view_feedback:
                     FeedbackActivity.launch(getActivity());
                     break;
-
-
+                //当前版本
+                case R.id.view_version:
+                    ToastUtil.showBottom(getActivity(), getString(R.string.current_version));
 
                 default:
                     break;

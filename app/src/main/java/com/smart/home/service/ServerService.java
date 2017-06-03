@@ -30,6 +30,10 @@ public class ServerService extends Service {
 
 	public static final String REGISTER_BROADCAST = "com.smart.home.broadcast";
 
+	public static final String IS_CONTROL_SUCCESS = "isControlSuccess";
+
+	private static final String RECEIVE_MESSAGE = "receiveMessage";
+
 	protected String mEquipCode;
 
 	private String mBulbProtocol;
@@ -75,6 +79,10 @@ public class ServerService extends Service {
 					sendBroadcast(sendIntent);
 				}else if(msg.what == HandlerProtocol.NET_NOT_CONNECT){
 					sendIntent.putExtra(IS_NET_CONNECT, false);
+					sendBroadcast(sendIntent);
+				}else if(msg.what == HandlerProtocol.CONTROL_SUCCESS){
+					sendIntent.putExtra(IS_CONTROL_SUCCESS, true);
+					sendIntent.putExtra(RECEIVE_MESSAGE, msg.obj.toString());
 					sendBroadcast(sendIntent);
 				}
 			}

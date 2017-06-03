@@ -19,7 +19,7 @@ import android.view.View;
 import com.smart.home.R;
 import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.EquipData;
-import com.smart.home.model.HandlerProtocol;
+import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
@@ -60,8 +60,6 @@ public class BulbControlActivity extends BaseActivity {
     private static final String BULB_OFF = "bulb_off";
 
     private static final String BULB_ON = "bulb_on";
-
-
 
     private String mSelectEquipCode;
 
@@ -125,29 +123,23 @@ public class BulbControlActivity extends BaseActivity {
                             ivBulb.setImageResource(R.drawable.bulb_on);
                             isEquipOpen = true;
 
-                            communicationSchema(HandlerProtocol.BULB_ON, BULB_ON, current_brightness++);
+                            communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++);
                         } else {
                             ivBulb.setImageResource(R.drawable.bulb_off);
                             isEquipOpen = false;
 
-                            communicationSchema(HandlerProtocol.BULB_OFF, null, -1);
+                            communicationSchema(BulbProtocol.BULB_OFF, null, -1);
                         }
                         break;
                     case R.id.iv_brightness_up:
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.BULB_BRIGHTNESS_UP, BULB_ON, current_brightness++);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
                         }
                         break;
 
                     case R.id.iv_brightness_down:
-//                    if (!isBulbOff) {
-//                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
-//                    } else {
-//                        ToastUtil.showBottom(this, getString(R.string.please_open_bulb));
-//                    }
                         if (isEquipOpen()) {
-//                        communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
-                            communicationSchema(HandlerProtocol.BULB_BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
                         }
                         break;
                     default:
@@ -187,11 +179,10 @@ public class BulbControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(int bulbProtocol, String bulbState, int brightness) {
+    private void communicationSchema(String bulbProtocol, String bulbState, int brightness) {
         if (mSchema != null) {
             if (mSchema.equals(LOCAL_NETWORK)) {
-                ServerThread.rvHandler.sendEmptyMessage(bulbProtocol);
-//                BulbServerService.Launch(this, mSelectEquipCode, bulbProtocol);
+                ServerThread.sendToClient(bulbProtocol);
             } else if (mSchema.equals(SERVER)) {
                 addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, bulbState, brightness)
                         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
@@ -212,18 +203,6 @@ public class BulbControlActivity extends BaseActivity {
         }
     }
 
-    private void isNetConnect() {
-        mUiHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == HandlerProtocol.NET_CONNECT) {
-                    isNetConnect = true;
-                } else {
-                    isNetConnect = false;
-                }
-            }
-        };
-    }
 
 
     private DialogInterface.OnClickListener mOnClickListener = new DialogInterface.OnClickListener() {
@@ -235,20 +214,44 @@ public class BulbControlActivity extends BaseActivity {
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
-//            addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1)
-//                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
-//                initBulbData(r.data);
-//                return;
-//            }, e -> {
-//                e.printStackTrace();
-//
-//            }));
+
+            if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                checkNetWork(getBaseContext());
+                ServerService.Launch(getBaseContext(), mSelectEquipCode);
+            }else if(mSchema != null && mSchema.equals(SERVER)){
+                checkNetWork(getBaseContext());
+                initServer();
+                isNetConnect = true;
+            }else {
+                isNetConnect = true;
+            }
+
+
         }
     };
+
+    private void initServer() {
+        addSubscription(ControlPresenter.getInstance().getBulbData(mSelectEquipCode, null, -1)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
+                    initBulbData(r.data);
+                    return;
+                }, e -> {
+                    e.printStackTrace();
+
+                }));
+    }
 
     private void initBulbData(StateDetail stateDetail) {
         current_brightness = stateDetail.brightness;
 
+    }
+    private void refreshUi(String message){
+        if(message.equals(BulbProtocol.BULB_ON)){
+            ivBulb.setImageResource(R.drawable.bulb_on);
+        }else if(message.equals(BulbProtocol.BULB_OFF)){
+            ivBulb.setImageResource(R.drawable.bulb_off);
+        }
+        //其他UI刷新
     }
 
     @Override
@@ -260,6 +263,11 @@ public class BulbControlActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+            isControlSuccess = intent.getBooleanExtra(IS_CONTROL_SUCCESS, false);
+            if(isControlSuccess) {
+                receiveMessage = intent.getStringExtra(RECEIVE_MESSAGE);
+                refreshUi(receiveMessage);
+            }
         }
     }
 }

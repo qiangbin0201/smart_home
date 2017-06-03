@@ -6,6 +6,7 @@ package com.smart.home.utils;
 
 public class RadixUtil {
 
+    // 将十进制整数字符串转换成16进制字符串（2字节）
     public static String intString2hexString(String nStr) {
         int n = Integer.parseInt(nStr);
         String hexString = Integer.toHexString(n);

@@ -1,6 +1,7 @@
 package com.smart.home.presenter;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.ConsumerIrManager;
 import android.os.Build;
@@ -11,7 +12,7 @@ import com.smart.home.ConsumerIrManagerCompat;
 /**
  * Created by qiangbin on 2017/5/11.
  */
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class InfraredPresenter {
 
     private static ConsumerIrManager mConsumerIrManager;

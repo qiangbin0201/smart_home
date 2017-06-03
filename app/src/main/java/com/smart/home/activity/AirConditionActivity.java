@@ -148,24 +148,24 @@ public class AirConditionActivity extends BaseActivity {
                     case R.id.iv_air_condition:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_ON, AIR_CONDITION_ON, mode[1], current_temp);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_ON, AIR_CONDITION_ON, mode[1], current_temp);
                             isEquipOpen = true;
                         } else {
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_OFF, AIR_CONDITION_OFF, mode[1], current_temp);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_OFF, AIR_CONDITION_OFF, mode[1], current_temp);
                             isEquipOpen = false;
                         }
                         break;
                     case R.id.iv_temp_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_TEMP_UP, AIR_CONDITION_ON, mode[1], current_temp++);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_TEMP_UP, AIR_CONDITION_ON, mode[1], current_temp++);
                         }
 
                         break;
                     case R.id.iv_temp_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_TEMP_DOWN, AIR_CONDITION_ON, mode[1], current_temp--);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_TEMP_DOWN, AIR_CONDITION_ON, mode[1], current_temp--);
 
                         }
                         break;
@@ -173,7 +173,7 @@ public class AirConditionActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             changed_mode = current_mode < 2 ? current_mode++ : 0;
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_MODE_UP, AIR_CONDITION_ON, mode[changed_mode], current_temp);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_UP, AIR_CONDITION_ON, mode[changed_mode], current_temp);
                             tvMode.setText(mode[changed_mode]);
                         }
                         break;
@@ -181,7 +181,7 @@ public class AirConditionActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             changed_mode = current_mode > 0 ? current_mode-- : 2;
-                            communicationSchema(HandlerProtocol.AIR_CONDITION_MODE_DOWN, AIR_CONDITION_ON, mode[changed_mode], current_temp);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_DOWN, AIR_CONDITION_ON, mode[changed_mode], current_temp);
                             tvMode.setText(mode[changed_mode]);
                         }
 
@@ -199,10 +199,11 @@ public class AirConditionActivity extends BaseActivity {
         }
     }
 
-    private void communicationSchema(int tvProtocol, String AirConditionState, String mode, int temp){
+    private void communicationSchema(String AirConditionProtocol, String AirConditionState, String mode, int temp){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
+                ServerThread.sendToClient(AirConditionProtocol);
+//                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
             }else if(mSchema.equals(SERVER)){
                 addSubscription(ControlPresenter.getInstance().getAirConditionData(mSelectEquipCode, AirConditionState, mode, temp).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initAirConditionData(r.data);
@@ -244,8 +245,10 @@ public class AirConditionActivity extends BaseActivity {
 
             isSelectEquip = true;
             if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                checkNetWork(getBaseContext());
                 ServerService.Launch(getBaseContext(), mSelectEquipCode);
             }else if(mSchema != null && mSchema.equals(SERVER)){
+                checkNetWork(getBaseContext());
                 initServer();
                 isNetConnect = true;
             }else {

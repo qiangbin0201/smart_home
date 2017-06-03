@@ -20,7 +20,7 @@ public class AppProxy {
 
     public IRestAdapter getDataApiRestAdapter(){
         if(mDataApiRestAdapter == null){
-            mDataApiRestAdapter = RestAdapterFactory.createRestAdapter("");
+            mDataApiRestAdapter = RestAdapterFactory.createRestAdapter("http://smart.adgomob.com/smart_server", true);
 
         }
         return mDataApiRestAdapter;

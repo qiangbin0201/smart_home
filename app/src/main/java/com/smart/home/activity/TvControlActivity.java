@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -22,12 +24,14 @@ import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.presenter.InfraredPresenter;
 import com.smart.home.presenter.ServerThread;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.InfraredTransformUtil;
+import com.smart.home.utils.NetWorkUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -132,11 +136,11 @@ public class TvControlActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
                             ivTvOff.setImageResource(R.drawable.on);
-                            communicationSchema(HandlerProtocol.TV_ON, TV_ON, current_channel, current_volume);
+                            communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume);
                             isEquipOpen = true;
                         } else {
                             ivTvOff.setImageResource(R.drawable.off);
-                            communicationSchema(HandlerProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
+                            communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
                             isEquipOpen = false;
 
                         }
@@ -145,25 +149,25 @@ public class TvControlActivity extends BaseActivity {
                     case R.id.iv_sound_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
+                            communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
                         }
                         break;
                     case R.id.iv_sound_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
+                            communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
                         }
                         break;
                     case R.id.iv_channel_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
+                            communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
                         }
                         break;
                     case R.id.iv_channel_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(HandlerProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
+                            communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
                         }
                         break;
                     default:
@@ -197,10 +201,12 @@ public class TvControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(int tvProtocol, String TvState, int channel, int volume){
+
+    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
+                ServerThread.sendToClient(tvProtocol);
+//                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
             }else if(mSchema.equals(SERVER)){
                 addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, TvState, channel, volume).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initTvData(r.data);
@@ -212,8 +218,13 @@ public class TvControlActivity extends BaseActivity {
 
             }else {
                 //红外线
-                int [] pattern = InfraredTransformUtil.hex2time(patternStr);
-                ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
+                boolean hasInfrared = checkInfrared(this);
+                if(hasInfrared) {
+                    int[] pattern = InfraredTransformUtil.hex2time(patternStr);
+                    ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
+                }else {
+                    ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
+                }
             }
         }
     }
@@ -241,8 +252,10 @@ public class TvControlActivity extends BaseActivity {
             isSelectEquip = true;
 
             if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                checkNetWork(getBaseContext());
                 ServerService.Launch(getBaseContext(), mSelectEquipCode);
             }else if(mSchema != null && mSchema.equals(SERVER)){
+                checkNetWork(getBaseContext());
                 initServer();
                 isNetConnect = true;
             }else {

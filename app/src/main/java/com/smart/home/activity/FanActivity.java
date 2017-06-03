@@ -19,6 +19,7 @@ import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.presenter.ServerThread;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
@@ -178,8 +179,10 @@ public class FanActivity extends BaseActivity {
             isSelectEquip = true;
 
             if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+                checkNetWork(getBaseContext());
                 ServerService.Launch(getBaseContext(), mSelectEquipCode);
             }else if(mSchema != null && mSchema.equals(SERVER)){
+                checkNetWork(getBaseContext());
                 initServer();
                 isNetConnect = true;
             }else {
@@ -202,7 +205,8 @@ public class FanActivity extends BaseActivity {
     private void communicationSchema(String fanProtocol, String fanState, int speed){
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
-                TvServerService.Launch(this, mSelectEquipCode, fanProtocol);
+                ServerThread.sendToClient(fanProtocol);
+//                TvServerService.Launch(this, mSelectEquipCode, fanProtocol);
             }else if(mSchema.equals(SERVER)){
                 addSubscription(ControlPresenter.getInstance().getFanData(mSelectEquipCode, fanState, speed).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initFanData(r.data);

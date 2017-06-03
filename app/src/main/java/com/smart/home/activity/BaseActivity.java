@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.smart.home.ConsumerIrManagerCompat;
 import com.smart.home.R;
 import com.smart.home.api.BaseResponse;
 import com.smart.home.confige.AppProxy;
@@ -35,6 +36,7 @@ import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
 import com.smart.home.service.ServerService;
 import com.smart.home.utils.ActivityStack;
+import com.smart.home.utils.NetWorkUtil;
 import com.smart.home.utils.ToastUtil;
 import com.smart.home.utils.Utils;
 import com.squareup.otto.Bus;
@@ -79,6 +81,10 @@ public class BaseActivity extends AppCompatActivity {
 
     protected static final String IS_NET_CONNECT = "isNetConnect";
 
+    protected static final String IS_CONTROL_SUCCESS = "isControlSuccess";
+
+    protected static final String RECEIVE_MESSAGE = "receiveMessage";
+
     protected boolean isSelectEquip = false;
 
     protected boolean isEquipOpen = false;
@@ -86,6 +92,10 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String INFRARED = "红外";
 
     protected boolean isNetConnect = false;
+
+    protected boolean isControlSuccess = false;
+
+    protected String receiveMessage;
 
     protected List<EquipData> list;
 
@@ -157,11 +167,28 @@ public class BaseActivity extends AppCompatActivity {
 
     private boolean mIsPageLoaded = true;
 
+    //初始化按键铃声
     protected void initKeyTone() {
         mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 5);
         mSound = mSoundPool.load(this, R.raw.beep, 1);
         mgr = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    //检查设备网络状态
+    protected void checkNetWork(Context context){
+        if(!NetWorkUtil.isNetworkAvailable(context)){
+            ToastUtil.showBottom(context, getString(R.string.please_connect_network));
+            return;
+        }
+    }
+
+    //检查设备是否有红外功能
+    protected boolean checkInfrared(Context context){
+        if(ConsumerIrManagerCompat.getInstance(context).hasIrEmitter()){
+            return true;
+        }
+        return false;
     }
 
 

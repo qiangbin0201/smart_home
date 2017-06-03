@@ -10,6 +10,8 @@ public class HandlerProtocol {
 
     public static int NET_NOT_CONNECT = 0x0000;
 
+    public static int CONTROL_SUCCESS = 0x1010;
+
     public static int BULB_OFF = 0x1000;
 
     public static int BULB_ON = 0x1100;

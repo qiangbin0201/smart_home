@@ -41,4 +41,7 @@
     <string name="control_equip">控制对象</string>
     <string name="local_net_not_connect">设备尚未连接</string>
     <string name="add_equip_text">添加设备</string>
+    <string name="please_connect_network">请先连接网络</string>
+    <string name="current_version">智能家居 1.0</string>
+    <string name="device_no_infrared_function">抱歉！您的设备没有红外功能</string>
 </resources>

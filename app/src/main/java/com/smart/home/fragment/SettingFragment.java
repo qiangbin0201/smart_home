@@ -13,7 +13,9 @@ import com.smart.home.R;
 import com.smart.home.View.SettingItemView;
 import com.smart.home.activity.FeedbackActivity;
 import com.smart.home.activity.HomeActivity;
+import com.smart.home.activity.LockActivity;
 import com.smart.home.activity.MyEquipActivity;
+import com.smart.home.activity.SettingLockActivity;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.OnDialogClickListener;
@@ -33,7 +35,7 @@ public class SettingFragment extends BaseFragment {
 
     private EquipDataPresenter mEquipDataPresenter;
 
-    private SettingItemView mViewClear, mViewVersion, mViewFeedback, mViewEquip, mViewExplain;
+    private SettingItemView mViewClear, mViewVersion, mViewFeedback, mViewEquip, mViewExplain, mViewLock;
 
     public static SettingFragment newInstance(){
         SettingFragment fragment = new SettingFragment();
@@ -66,6 +68,8 @@ public class SettingFragment extends BaseFragment {
         mViewEquip.setOnClickListener(mOnClickListener);
         mViewExplain = (SettingItemView) view.findViewById(R.id.view_explain);
         mViewExplain.setOnClickListener(mOnClickListener);
+        mViewLock = (SettingItemView) view.findViewById(R.id.view_lock);
+        mViewLock.setOnClickListener(mOnClickListener);
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -90,13 +94,19 @@ public class SettingFragment extends BaseFragment {
                 case R.id.view_explain:
                     CustomDialogFactory.showExplainDialog(getActivity(), false, mOnDialogClickListener, true);
                     break;
-
+                //意见反馈
                 case R.id.view_feedback:
                     FeedbackActivity.launch(getActivity());
                     break;
                 //当前版本
                 case R.id.view_version:
                     ToastUtil.showBottom(getActivity(), getString(R.string.current_version));
+                    break;
+                //安全设置
+                case R.id.view_lock:
+//                    LockActivity.Launch(getActivity(), LockActivity.TYPE_SETTING);
+                    SettingLockActivity.Launch(getActivity());
+                    break;
 
                 default:
                     break;

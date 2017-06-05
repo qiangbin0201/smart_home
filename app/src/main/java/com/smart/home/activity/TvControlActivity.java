@@ -26,6 +26,7 @@ import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.presenter.InfraredPresenter;
 import com.smart.home.presenter.ServerThread;
+import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
@@ -58,6 +59,8 @@ public class TvControlActivity extends BaseActivity {
 
     private static final String TV_OFF = "tv_off";
 
+    private static final String SWITCH_TV_ON = "switch_tv_on";
+
     private String mSchema;
 
     private MyReceiver mMyRervice;
@@ -87,10 +90,9 @@ public class TvControlActivity extends BaseActivity {
     ImageView ivChannelDown;
 
 
-
-    public static void launch(Context context, String schema){
+    public static void launch(Context context, String schema) {
         Intent intent = new Intent(context, TvControlActivity.class);
-        intent.putExtra(SCHEMA,schema);
+        intent.putExtra(SCHEMA, schema);
         context.startActivity(intent);
     }
 
@@ -111,7 +113,7 @@ public class TvControlActivity extends BaseActivity {
 
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
-        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnClickListener);
+        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE, R.drawable.icon_more, mBarOnClickListener);
         setContentView(R.layout.activity_tv);
 
         initBroadcast();
@@ -119,18 +121,30 @@ public class TvControlActivity extends BaseActivity {
         initKeyTone();
 
         ButterKnife.bind(this);
+        initView();
+
+    }
+
+    private void initView() {
+        //初始化SharedPreferences的操作类
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_TV_ON, false);
+        if(switch_status){
+            ivTvOff.setImageResource(R.drawable.on);
+        }else {
+            ivTvOff.setImageResource(R.drawable.off);
+        }
 
     }
 
 
-
     @OnClick({R.id.iv_tv_off, R.id.iv_sound_up, R.id.iv_sound_down, R.id.iv_channel_up, R.id.iv_channel_down})
-    public void onClick(View view){
+    public void onClick(View view) {
         //获得当前媒体音量用来设置按键音大小
         float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-        if(isSelectEquip) {
-            if(isNetConnect) {
+        if (isSelectEquip) {
+            if (isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_tv_off:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
@@ -173,10 +187,10 @@ public class TvControlActivity extends BaseActivity {
                     default:
                         break;
                 }
-            }else {
+            } else {
                 ToastUtil.showFailed(this, getString(R.string.local_net_not_connect));
             }
-        }else {
+        } else {
             ToastUtil.showBottom(this, getString(R.string.please_select_equip));
         }
     }
@@ -202,12 +216,12 @@ public class TvControlActivity extends BaseActivity {
     }
 
 
-    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume){
-        if(mSchema != null){
-            if(mSchema.equals(LOCAL_NETWORK)){
+    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume) {
+        if (mSchema != null) {
+            if (mSchema.equals(LOCAL_NETWORK)) {
                 ServerThread.sendToClient(tvProtocol);
 //                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
-            }else if(mSchema.equals(SERVER)){
+            } else if (mSchema.equals(SERVER)) {
                 addSubscription(ControlPresenter.getInstance().getTvData(mSelectEquipCode, TvState, channel, volume).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initTvData(r.data);
                     return;
@@ -216,19 +230,18 @@ public class TvControlActivity extends BaseActivity {
 
                 }));
 
-            }else {
+            } else {
                 //红外线
                 boolean hasInfrared = checkInfrared(this);
-                if(hasInfrared) {
+                if (hasInfrared) {
                     int[] pattern = InfraredTransformUtil.hex2time(patternStr);
                     ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
-                }else {
+                } else {
                     ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
                 }
             }
         }
     }
-
 
 
     private View.OnClickListener mBarOnClickListener = new View.OnClickListener() {
@@ -247,18 +260,18 @@ public class TvControlActivity extends BaseActivity {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             tvEquip.setText(mEquipPositionList.get(i));
-            List <EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
+            List<EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
             isSelectEquip = true;
 
             if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
                 checkNetWork(getBaseContext());
                 ServerService.Launch(getBaseContext(), mSelectEquipCode);
-            }else if(mSchema != null && mSchema.equals(SERVER)){
+            } else if (mSchema != null && mSchema.equals(SERVER)) {
                 checkNetWork(getBaseContext());
                 initServer();
                 isNetConnect = true;
-            }else {
+            } else {
                 isNetConnect = true;
             }
 
@@ -283,13 +296,28 @@ public class TvControlActivity extends BaseActivity {
 
     }
 
-    public class MyReceiver extends BroadcastReceiver{
+    private void refreshUi(String receiveMessage) {
+        if(receiveMessage != null){
+            if(receiveMessage.equals(TvProtocol.TV_ON)){
+                ivTvOff.setImageResource(R.drawable.on);
+            }else if(receiveMessage.equals(TvProtocol.TV_OFF)) {
+                ivTvOff.setImageResource(R.drawable.off);
+            }
+        }
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+            isControlSuccess = intent.getBooleanExtra(IS_CONTROL_SUCCESS, false);
+            if (isControlSuccess) {
+                receiveMessage = intent.getStringExtra(RECEIVE_MESSAGE);
+                refreshUi(receiveMessage);
+            }
         }
     }
-
-
 }
+
+

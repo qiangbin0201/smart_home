@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_setting_lock"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lock_pattern_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="@string/please_draw_password"
+        android:textColor="@color/text_color"
+        android:textSize="20sp" />
+
+    <com.smart.home.View.LockPatternView
+        android:id="@+id/lock_pattern_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/ll_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_fix_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:leftIcon="@drawable/lock"
+            app:titleD="@string/set_password">
+
+        </com.smart.home.View.SettingItemView>
+
+        <View style="@style/SettingFragmentLineView" />
+
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_clear_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:leftIcon="@drawable/clear_password"
+            app:titleD="@string/clear_password">
+
+        </com.smart.home.View.SettingItemView>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -19,11 +19,11 @@ public class ServerThread extends Thread
 
 	public static Handler rvHandler;
 
-	private static boolean isSelectedEquip = true;
+	private static boolean isSelectedEquip = false;
 
 	private Handler mUiHandler;
 
-	private Socket s = null;
+	private  static Socket s = null;
 
 	private BufferedReader br = null;
 
@@ -34,7 +34,7 @@ public class ServerThread extends Thread
 	public ServerThread(Socket s, String equipCode, Handler mUiHandler)
 		throws IOException
 	{
-		this.s = s;
+		ServerThread.s = s;
 		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		os = s.getOutputStream();
 		this.mUiHandler = mUiHandler;
@@ -52,7 +52,7 @@ public class ServerThread extends Thread
 				try {
                         while ((content = readFromClient()) != null ) {
 							if(isFirstMessage){
-								if(!content.equals(mEquipCode)) {
+								if(!content.equals("11")) {
 									s.close();
 									br.close();
 									os.close();
@@ -105,4 +105,14 @@ public class ServerThread extends Thread
 		}
 		return null;
 	}
+	public static void killSocket(){
+		try {
+			if(s != null) {
+				s.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

@@ -34,6 +34,7 @@ import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.utils.ActivityStack;
 import com.smart.home.utils.NetWorkUtil;
@@ -84,6 +85,10 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String IS_CONTROL_SUCCESS = "isControlSuccess";
 
     protected static final String RECEIVE_MESSAGE = "receiveMessage";
+
+    protected static final String EQUIP_STATUS_FILE = "equipStatusFile";
+
+    protected StatusPresenter mStatusPresenter;
 
     protected boolean isSelectEquip = false;
 

@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.ConsumerIrManager;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -19,13 +18,13 @@ import android.view.View;
 import com.smart.home.R;
 import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.EquipData;
-import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.presenter.InfraredPresenter;
 import com.smart.home.presenter.ServerThread;
+import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
@@ -61,12 +60,13 @@ public class BulbControlActivity extends BaseActivity {
 
     private static final String BULB_ON = "bulb_on";
 
+    private static final String SWITCH_BULB_ON = "switch_bulb_on";
+
     private String mSelectEquipCode;
 
     private MyReceiver mMyRervice;
 
     public static Handler mUiHandler;
-
 
 
     @BindView(R.id.tv_equip)
@@ -89,6 +89,7 @@ public class BulbControlActivity extends BaseActivity {
         super.onStart();
         //初始化数据库
         EquipDataPresenter.getInstance().initDbHelp(this);
+
         initData();
     }
 
@@ -101,8 +102,22 @@ public class BulbControlActivity extends BaseActivity {
         setContentView(R.layout.activity_bulb);
 
         initBroadcast();
-
+        initKeyTone();
         ButterKnife.bind(this);
+        initView();
+    }
+
+    private void initView() {
+        //初始化SharedPreferences的操作类
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_BULB_ON, false);
+        if(switch_status){
+            ivBulb.setImageResource(R.drawable.bulb_on);
+            isEquipOpen = true;
+        }else {
+            ivBulb.setImageResource(R.drawable.bulb_off);
+            isEquipOpen = false;
+        }
     }
 
     //注册广播
@@ -115,10 +130,14 @@ public class BulbControlActivity extends BaseActivity {
 
     @OnClick({R.id.iv_bulb, R.id.iv_brightness_up, R.id.iv_brightness_down})
     public void onClick(View view) {
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         if (isSelectEquip) {
             if(isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_bulb:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
                             ivBulb.setImageResource(R.drawable.bulb_on);
                             isEquipOpen = true;
@@ -132,12 +151,14 @@ public class BulbControlActivity extends BaseActivity {
                         }
                         break;
                     case R.id.iv_brightness_up:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
                         }
                         break;
 
                     case R.id.iv_brightness_down:
+                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
                         }
@@ -167,9 +188,9 @@ public class BulbControlActivity extends BaseActivity {
 
     private void initData() {
         mSchema = getIntent().getStringExtra(SCHEMA);
-        if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
-            ServerService.Launch(this, mSelectEquipCode);
-        }
+//        if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+//            ServerService.Launch(this, mSelectEquipCode);
+//        }
         mEquipPositionList = new ArrayList<>();
         mEquipPositionList.clear();
         list = EquipDataPresenter.getInstance().queryUserList(TOOLBAR_TITLE);
@@ -248,14 +269,18 @@ public class BulbControlActivity extends BaseActivity {
     private void refreshUi(String message){
         if(message.equals(BulbProtocol.BULB_ON)){
             ivBulb.setImageResource(R.drawable.bulb_on);
+            mStatusPresenter.putBoolean(SWITCH_BULB_ON, true);
         }else if(message.equals(BulbProtocol.BULB_OFF)){
             ivBulb.setImageResource(R.drawable.bulb_off);
+            mStatusPresenter.putBoolean(SWITCH_BULB_ON, false);
         }
         //其他UI刷新
     }
 
     @Override
     protected void onDestroy() {
+        //销毁连接的socket客户端
+        ServerThread.killSocket();
         super.onDestroy();
     }
 

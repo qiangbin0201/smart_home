@@ -2,8 +2,6 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
 
 
-
-
     <dimen name="tab_title_size">16sp</dimen>
     <dimen name="view_setting_height">45dp</dimen>
 

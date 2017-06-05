@@ -56,6 +56,15 @@
         </com.smart.home.View.SettingItemView>
 
         <View style="@style/SettingFragmentLineView"/>
+        <com.smart.home.View.SettingItemView
+            android:id="@+id/view_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:leftIcon="@drawable/lock"
+            app:titleD="@string/safe_lock">
+
+        </com.smart.home.View.SettingItemView>
+        <View style="@style/SettingFragmentLineView"/>
 
         <com.smart.home.View.SettingItemView
             android:id="@+id/view_feedback"

@@ -6,9 +6,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.smart.home.R;
+import com.smart.home.presenter.StatusPresenter;
 
 import java.util.Random;
 
@@ -23,6 +25,7 @@ public class SplashScreenActivity extends BaseActivity {
     private static final float SCALE_END = 1.13F;
 
     private ImageView mSplashImage;
+
 
     private static final int[] SPLASH_ARRAY = {
             R.drawable.splash0,
@@ -42,6 +45,7 @@ public class SplashScreenActivity extends BaseActivity {
             R.drawable.splash15,
             R.drawable.splash16,
     };
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,11 @@ public class SplashScreenActivity extends BaseActivity {
         mSplashImage = (ImageView) findViewById(R.id.iv_splash);
         mSplashImage.setImageResource(SPLASH_ARRAY[r.nextInt(SPLASH_ARRAY.length)]);
         animateImage();
+
+        StatusPresenter mPasswordPresenter = StatusPresenter.getInstance(this, LockActivity.PASSWORD_FILE);
+
+        password = mPasswordPresenter.getString(LockActivity.PASSWORD, "");
+
 
     }
 
@@ -67,8 +76,13 @@ public class SplashScreenActivity extends BaseActivity {
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                HomeActivity.launch(SplashScreenActivity.this);
-                finish();
+                if(TextUtils.isEmpty(password)) {
+                    HomeActivity.launch(SplashScreenActivity.this);
+                    finish();
+                }else {
+                    LockActivity.Launch(SplashScreenActivity.this, LockActivity.TYPE_CHECK);
+                    finish();
+                }
             }
         });
     }

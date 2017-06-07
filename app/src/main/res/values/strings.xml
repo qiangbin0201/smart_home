@@ -38,7 +38,7 @@
     <string name="please_open_equip">请先打开设备</string>
     <string name="please_open_tv">请先打开电视</string>
     <string name="please_open_air_condition">请先打开空调</string>
-    <string name="delete_sucess">删除成功</string>
+    <string name="delete_success">删除成功</string>
     <string name="control_equip">控制对象</string>
     <string name="local_net_not_connect">设备尚未连接</string>
     <string name="add_equip_text">添加设备</string>
@@ -58,4 +58,28 @@
     <string name="please_continue">继续</string>
     <string name="try_again">重试</string>
     <string name="please_draw_pattern">请绘制图案</string>
+    //操作记录数据库
+    <string name="data_open_bulb">打开电灯</string>
+    <string name="data_close_bulb">关闭电灯</string>
+    <string name="data_brightness_up">增加电灯亮度</string>
+    <string name="data_brightness_down">减小电灯亮度</string>
+
+    <string name="data_open_tv">打开电视</string>
+    <string name="data_close_tv">关闭电视</string>
+    <string name="data_channel_up">增加电视频道</string>
+    <string name="data_channel_down">减小电视频道</string>
+    <string name="data_sound_up">增加电视音量</string>
+    <string name="data_sound_down">减小电视音量</string>
+
+    <string name="data_open_airCondition">打开空调</string>
+    <string name="data_close_airCondition">关闭空调</string>
+    <string name="data_mode_up">上调空调模式</string>
+    <string name="data_mode_down">下调空调模式</string>
+    <string name="data_temp_up">增加空调温度</string>
+    <string name="data_temp_down">减小空调温度</string>
+
+    <string name="data_open_fan">打开风扇</string>
+    <string name="data_close_fan">打开风扇</string>
+    <string name="data_speed_up">增加风速</string>
+    <string name="data_speed_down">减小风速</string>
 </resources>

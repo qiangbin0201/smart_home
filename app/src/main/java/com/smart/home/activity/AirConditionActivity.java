@@ -18,13 +18,17 @@ import com.smart.home.model.EquipData;
 import com.smart.home.model.HandlerProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
+import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.presenter.OperationDataPresenter;
 import com.smart.home.presenter.ServerThread;
+import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.DateUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class AirConditionActivity extends BaseActivity {
 
     private static final String SCHEMA = "schema";
 
-    private  static final String TOOLBAR_TITLE = "空调";
+    private static final String TOOLBAR_TITLE = "空调";
 
     private String[] mode = {"制冷", "自动", "制热"};
 
@@ -68,6 +72,8 @@ public class AirConditionActivity extends BaseActivity {
 
     private int changed_mode;
 
+    private static final String SWITCH_AIR_ON = "switch_air_on";
+
     @BindView(R.id.iv_air_condition)
     ImageView ivAirCondition;
     @BindView(R.id.iv_temp_up)
@@ -83,12 +89,11 @@ public class AirConditionActivity extends BaseActivity {
     @BindView(R.id.tv_mode)
     TextView tvMode;
 
-    public static void launch(Context context, String schema){
+    public static void launch(Context context, String schema) {
         Intent intent = new Intent(context, AirConditionActivity.class);
         intent.putExtra(SCHEMA, schema);
         context.startActivity(intent);
     }
-
 
 
     @Override
@@ -105,7 +110,7 @@ public class AirConditionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         overridePendingTransition(R.anim.push_down_in, R.anim.anim_alpha_dismiss);
-        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE,R.drawable.icon_more, mBarOnClickListener);
+        setToolbar(ToolbarStyle.RETURN_TITLE_ICON, TOOLBAR_TITLE, R.drawable.icon_more, mBarOnClickListener);
         setContentView(R.layout.activity_air_condition);
 
         ButterKnife.bind(this);
@@ -113,6 +118,21 @@ public class AirConditionActivity extends BaseActivity {
         initKeyTone();
 
         initBroadcast();
+
+        initView();
+    }
+
+    private void initView() {
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_AIR_ON, false);
+        if (switch_status) {
+            ivAirCondition.setImageResource(R.drawable.on);
+            isEquipOpen = true;
+        } else {
+            ivAirCondition.setImageResource(R.drawable.off);
+            isEquipOpen = false;
+        }
+
     }
 
 
@@ -137,28 +157,35 @@ public class AirConditionActivity extends BaseActivity {
     }
 
     @OnClick({R.id.iv_air_condition, R.id.iv_temp_up, R.id.iv_temp_down, R.id.iv_mode_up, R.id.iv_mode_down})
-    public void onClick(View view){
+    public void onClick(View view) {
 
         //获得当前媒体音量用来设置按键音大小
         float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-        if(isSelectEquip){
-            if(isNetConnect) {
+        if (isSelectEquip) {
+            if (isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_air_condition:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_ON, AIR_CONDITION_ON, mode[1], current_temp);
                             isEquipOpen = true;
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_airCondition));
                         } else {
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_OFF, AIR_CONDITION_OFF, mode[1], current_temp);
                             isEquipOpen = false;
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_airCondition));
                         }
                         break;
                     case R.id.iv_temp_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_TEMP_UP, AIR_CONDITION_ON, mode[1], current_temp++);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_temp_up));
                         }
 
                         break;
@@ -166,6 +193,8 @@ public class AirConditionActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_TEMP_DOWN, AIR_CONDITION_ON, mode[1], current_temp--);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_temp_down));
 
                         }
                         break;
@@ -175,6 +204,8 @@ public class AirConditionActivity extends BaseActivity {
                             changed_mode = current_mode < 2 ? current_mode++ : 0;
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_UP, AIR_CONDITION_ON, mode[changed_mode], current_temp);
                             tvMode.setText(mode[changed_mode]);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_mode_up));
                         }
                         break;
                     case R.id.iv_mode_down:
@@ -183,28 +214,30 @@ public class AirConditionActivity extends BaseActivity {
                             changed_mode = current_mode > 0 ? current_mode-- : 2;
                             communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_DOWN, AIR_CONDITION_ON, mode[changed_mode], current_temp);
                             tvMode.setText(mode[changed_mode]);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_mode_down));
                         }
 
                         break;
                     default:
                         break;
                 }
-            }else {
+            } else {
                 ToastUtil.showFailed(this, getString(R.string.local_net_not_connect));
             }
 
 
-        }else {
+        } else {
             ToastUtil.showBottom(this, getString(R.string.please_select_equip));
         }
     }
 
-    private void communicationSchema(String AirConditionProtocol, String AirConditionState, String mode, int temp){
-        if(mSchema != null){
-            if(mSchema.equals(LOCAL_NETWORK)){
+    private void communicationSchema(String AirConditionProtocol, String AirConditionState, String mode, int temp) {
+        if (mSchema != null) {
+            if (mSchema.equals(LOCAL_NETWORK)) {
                 ServerThread.sendToClient(AirConditionProtocol);
 //                ServerThread.rvHandler.sendEmptyMessage(tvProtocol);
-            }else if(mSchema.equals(SERVER)){
+            } else if (mSchema.equals(SERVER)) {
                 addSubscription(ControlPresenter.getInstance().getAirConditionData(mSelectEquipCode, AirConditionState, mode, temp).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(r -> {
                     initAirConditionData(r.data);
                     return;
@@ -213,14 +246,11 @@ public class AirConditionActivity extends BaseActivity {
 
                 }));
 
-            }else {
+            } else {
                 //红外线
             }
         }
     }
-
-
-
 
 
     private View.OnClickListener mBarOnClickListener = new View.OnClickListener() {
@@ -240,18 +270,18 @@ public class AirConditionActivity extends BaseActivity {
         public void onClick(DialogInterface dialogInterface, int i) {
 
             tvEquip.setText(mEquipPositionList.get(i));
-            List <EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
+            List<EquipData> mSelectList = EquipDataPresenter.getInstance().queryEquipList(mEquipPositionList.get(i));
             mSelectEquipCode = mSelectList.get(0).getEquipCode();
 
             isSelectEquip = true;
             if (mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
                 checkNetWork(getBaseContext());
                 ServerService.Launch(getBaseContext(), mSelectEquipCode);
-            }else if(mSchema != null && mSchema.equals(SERVER)){
+            } else if (mSchema != null && mSchema.equals(SERVER)) {
                 checkNetWork(getBaseContext());
                 initServer();
                 isNetConnect = true;
-            }else {
+            } else {
                 isNetConnect = true;
             }
 
@@ -271,7 +301,7 @@ public class AirConditionActivity extends BaseActivity {
     }
 
     private void initAirConditionData(StateDetail stateDetail) {
-        if(stateDetail != null) {
+        if (stateDetail != null) {
             current_temp = stateDetail.air_temp;
             current_mode = stateDetail.mode;
         }
@@ -280,20 +310,38 @@ public class AirConditionActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(list != null){
+        if (list != null) {
             list = null;
         }
-    if(mEquipPositionList != null){
-        mEquipPositionList = null;
-    }
+        if (mEquipPositionList != null) {
+            mEquipPositionList = null;
+        }
         super.onDestroy();
     }
 
-    public class MyReceiver extends BroadcastReceiver{
+    public class MyReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+            isControlSuccess = intent.getBooleanExtra(IS_CONTROL_SUCCESS, false);
+            if (isControlSuccess) {
+                receiveMessage = intent.getStringExtra(RECEIVE_MESSAGE);
+                refreshUi(receiveMessage);
+            }
         }
+    }
+
+    private void refreshUi(String receiveMessage) {
+        if (receiveMessage != null) {
+            if (receiveMessage.equals(TvProtocol.TV_ON)) {
+                ivAirCondition.setImageResource(R.drawable.on);
+                mStatusPresenter.putBoolean(SWITCH_AIR_ON, true);
+            } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
+                ivAirCondition.setImageResource(R.drawable.off);
+                mStatusPresenter.putBoolean(SWITCH_AIR_ON, false);
+            }
+        }
+
     }
 }

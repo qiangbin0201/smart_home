@@ -45,7 +45,7 @@ public class LockActivity extends Activity implements LockPatternView.OnPatternC
     private String patternPassword1;
 
     private boolean isConfirm = false;
-
+    //标识判别作用，辅助参数
     private boolean flag = true;
 
     protected SoundPool mSoundPool;
@@ -73,7 +73,6 @@ public class LockActivity extends Activity implements LockPatternView.OnPatternC
         initView();
 
         initKeyTone();
-
 
     }
 

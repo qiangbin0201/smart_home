@@ -17,13 +17,17 @@ import com.smart.home.model.EquipData;
 import com.smart.home.model.FanProtocol;
 import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarStyle;
+import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
+import com.smart.home.presenter.OperationDataPresenter;
 import com.smart.home.presenter.ServerThread;
+import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.DateUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -54,6 +58,8 @@ public class FanActivity extends BaseActivity {
     private MyReceiver mMyRervice;
 
     private int current_speed;
+
+    private static final String SWITCH_FAN_ON = "switch_fan_on";
 
     @BindView(R.id.iv_fan)
     ImageView ivFan;
@@ -93,6 +99,20 @@ public class FanActivity extends BaseActivity {
 
         initKeyTone();
 
+        initView();
+
+    }
+
+    private void initView() {
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_FAN_ON, false);
+        if (switch_status) {
+            ivFan.setImageResource(R.drawable.on);
+            isEquipOpen = true;
+        } else {
+            ivFan.setImageResource(R.drawable.off);
+            isEquipOpen = false;
+        }
     }
 
     @OnClick({R.id.iv_fan, R.id.iv_speed_up, R.id.iv_speed_down})
@@ -108,9 +128,13 @@ public class FanActivity extends BaseActivity {
                         if (!isEquipOpen) {
                             communicationSchema(FanProtocol.FAN_ON, FAN_ON, current_speed);
                             isEquipOpen = true;
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_fan));
                         } else {
                             communicationSchema(FanProtocol.FAN_OFF, FAN_OFF, current_speed);
                             isEquipOpen = false;
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_fan));
                         }
 
                         break;
@@ -118,12 +142,16 @@ public class FanActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(FanProtocol.FAN_SPEED_UP, FAN_ON, current_speed++);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_speed_up));
                         }
                         break;
                     case R.id.iv_speed_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(FanProtocol.FAN_SPEED_DOWN, FAN_ON, current_speed--);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_speed_down));
 
                         }
                         break;
@@ -235,6 +263,23 @@ public class FanActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             isNetConnect = intent.getBooleanExtra(IS_NET_CONNECT, false);
+            isControlSuccess = intent.getBooleanExtra(IS_CONTROL_SUCCESS, false);
+            if (isControlSuccess) {
+                receiveMessage = intent.getStringExtra(RECEIVE_MESSAGE);
+                refreshUi(receiveMessage);
+            }
+        }
+    }
+
+    private void refreshUi(String receiveMessage) {
+        if (receiveMessage != null) {
+            if (receiveMessage.equals(TvProtocol.TV_ON)) {
+                ivFan.setImageResource(R.drawable.on);
+                mStatusPresenter.putBoolean(SWITCH_FAN_ON, true);
+            } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
+                ivFan.setImageResource(R.drawable.off);
+                mStatusPresenter.putBoolean(SWITCH_FAN_ON, false);
+            }
         }
     }
 }

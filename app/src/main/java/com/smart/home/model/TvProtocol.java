@@ -19,4 +19,18 @@ public class TvProtocol {
     //频道减
     public static final String TV_CHANNEL_DOWN = "10010";
 
+    public static final String INFRARED_OFF = "S 0 1 0 0 0 0 0 C";
+
+    public static final String INFRARED_ON = "S 0 1 1 0 0 0 0 C";
+
+    public static final String INFRARED_SOUND_UP = "S 0 1 1 1 0 0 0 C";
+
+    public static final String INFRARED_SOUND_DOWN= "S 0 1 1 0 1 0 0 C";
+
+    public static final String INFRARED_CHANNEL_UP = "S 0 1 1 0 0 1 0 C";
+
+    public static final String INFRARED_CHANNEL_DOWN = "S 0 1 1 0 0 0 1 C";
+
+
+
 }

@@ -25,12 +25,14 @@ import com.smart.home.model.TvProtocol;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.presenter.InfraredPresenter;
+import com.smart.home.presenter.OperationDataPresenter;
 import com.smart.home.presenter.ServerThread;
 import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.DateUtil;
 import com.smart.home.utils.InfraredTransformUtil;
 import com.smart.home.utils.NetWorkUtil;
 import com.smart.home.utils.ToastUtil;
@@ -129,10 +131,12 @@ public class TvControlActivity extends BaseActivity {
         //初始化SharedPreferences的操作类
         mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
         boolean switch_status = mStatusPresenter.getBoolan(SWITCH_TV_ON, false);
-        if(switch_status){
+        if (switch_status) {
             ivTvOff.setImageResource(R.drawable.on);
-        }else {
+            isEquipOpen = true;
+        } else {
             ivTvOff.setImageResource(R.drawable.off);
+            isEquipOpen = false;
         }
 
     }
@@ -152,10 +156,16 @@ public class TvControlActivity extends BaseActivity {
                             ivTvOff.setImageResource(R.drawable.on);
                             communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume);
                             isEquipOpen = true;
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_tv));
                         } else {
                             ivTvOff.setImageResource(R.drawable.off);
                             communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
                             isEquipOpen = false;
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_tv));
 
                         }
 
@@ -164,24 +174,35 @@ public class TvControlActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_sound_up));
                         }
                         break;
                     case R.id.iv_sound_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_sound_down));
                         }
                         break;
                     case R.id.iv_channel_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
+
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_channel_up));
                         }
                         break;
                     case R.id.iv_channel_down:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_channel_down));
                         }
                         break;
                     default:
@@ -211,8 +232,6 @@ public class TvControlActivity extends BaseActivity {
         for (EquipData equipData : list) {
             mEquipPositionList.add(equipData.getEquipPosition());
         }
-
-
     }
 
 
@@ -297,11 +316,13 @@ public class TvControlActivity extends BaseActivity {
     }
 
     private void refreshUi(String receiveMessage) {
-        if(receiveMessage != null){
-            if(receiveMessage.equals(TvProtocol.TV_ON)){
+        if (receiveMessage != null) {
+            if (receiveMessage.equals(TvProtocol.TV_ON)) {
                 ivTvOff.setImageResource(R.drawable.on);
-            }else if(receiveMessage.equals(TvProtocol.TV_OFF)) {
+                mStatusPresenter.putBoolean(SWITCH_TV_ON, true);
+            } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
                 ivTvOff.setImageResource(R.drawable.off);
+                mStatusPresenter.putBoolean(SWITCH_TV_ON, false);
             }
         }
     }

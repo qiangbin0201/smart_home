@@ -23,11 +23,13 @@ import com.smart.home.model.ToolbarStyle;
 import com.smart.home.presenter.ControlPresenter;
 import com.smart.home.presenter.EquipDataPresenter;
 import com.smart.home.presenter.InfraredPresenter;
+import com.smart.home.presenter.OperationDataPresenter;
 import com.smart.home.presenter.ServerThread;
 import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
+import com.smart.home.utils.DateUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -67,7 +69,6 @@ public class BulbControlActivity extends BaseActivity {
     private MyReceiver mMyRervice;
 
     public static Handler mUiHandler;
-
 
     @BindView(R.id.tv_equip)
     TextView tvEquip;
@@ -143,17 +144,23 @@ public class BulbControlActivity extends BaseActivity {
                             isEquipOpen = true;
 
                             communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_bulb));
                         } else {
                             ivBulb.setImageResource(R.drawable.bulb_off);
                             isEquipOpen = false;
 
                             communicationSchema(BulbProtocol.BULB_OFF, null, -1);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_bulb));
                         }
                         break;
                     case R.id.iv_brightness_up:
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_up));
                         }
                         break;
 
@@ -161,6 +168,8 @@ public class BulbControlActivity extends BaseActivity {
                         mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
                             communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+                            long currentTime = System.currentTimeMillis();
+                            OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_down));
                         }
                         break;
                     default:

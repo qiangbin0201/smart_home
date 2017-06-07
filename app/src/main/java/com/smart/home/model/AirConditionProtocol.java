@@ -18,4 +18,16 @@ public class AirConditionProtocol {
 
     public static final String AIR_CONDITION_MODE_DOWN= "10001";
 
+    public static final String INFRARED_OFF = "S 1 0 0 0 0 0 0 C";
+
+    public static final String INFRARED_ON = "S 1 0 1 0 0 0 0 C";
+
+    public static final String INFRARED_TEMP_YP = "S 1 0 1 1 0 0 0 C";
+
+    public static final String INFRARED_TEMP_DOWN = "S 1 0 1 0 1 0 0 C";
+
+    public static final String INFRARED_MODE_UP = "S 1 0 1 0 0 1 0 C";
+
+    public static final String INFRARED_MODE_DOWN = "S 1 0 1 0 0 0 1 C";
+
 }

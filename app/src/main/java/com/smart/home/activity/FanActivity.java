@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.smart.home.ConsumerIrManagerCompat;
 import com.smart.home.R;
 import com.smart.home.model.EquipData;
 import com.smart.home.model.FanProtocol;
@@ -28,6 +29,7 @@ import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.DateUtil;
+import com.smart.home.utils.InfraredTransformUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class FanActivity extends BaseActivity {
     private MyReceiver mMyRervice;
 
     private int current_speed;
+
 
     private static final String SWITCH_FAN_ON = "switch_fan_on";
 
@@ -104,34 +107,36 @@ public class FanActivity extends BaseActivity {
     }
 
     private void initView() {
-        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
-        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_FAN_ON, false);
-        if (switch_status) {
-            ivFan.setImageResource(R.drawable.on);
-            isEquipOpen = true;
-        } else {
-            ivFan.setImageResource(R.drawable.off);
-            isEquipOpen = false;
+        if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+            mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+            boolean switch_status = mStatusPresenter.getBoolan(SWITCH_FAN_ON, false);
+            initSwitch(switch_status, ivFan);
+//            if (switch_status) {
+//                ivFan.setImageResource(R.drawable.on);
+//                isEquipOpen = true;
+//            } else {
+//                ivFan.setImageResource(R.drawable.off);
+//                isEquipOpen = false;
+//            }
+        }else if(mSchema != null && mSchema.equals(SERVER)){
+            initSwitch(equipOpen, ivFan);
+
         }
     }
 
     @OnClick({R.id.iv_fan, R.id.iv_speed_up, R.id.iv_speed_down})
     public void onClick(View view){
-        //获得当前媒体音量用来设置按键音大小
-        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-
         if(isSelectEquip){
             if(isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_fan:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
-                            communicationSchema(FanProtocol.FAN_ON, FAN_ON, current_speed);
+                            communicationSchema(FanProtocol.FAN_ON, FAN_ON, current_speed, FanProtocol.INFRARED_ON);
                             isEquipOpen = true;
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_fan));
                         } else {
-                            communicationSchema(FanProtocol.FAN_OFF, FAN_OFF, current_speed);
+                            communicationSchema(FanProtocol.FAN_OFF, FAN_OFF, current_speed, FanProtocol.INFRARED_OFF);
                             isEquipOpen = false;
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_fan));
@@ -139,17 +144,15 @@ public class FanActivity extends BaseActivity {
 
                         break;
                     case R.id.iv_speed_up:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(FanProtocol.FAN_SPEED_UP, FAN_ON, current_speed++);
+                            communicationSchema(FanProtocol.FAN_SPEED_UP, FAN_ON, current_speed++, FanProtocol.INFRARED_SPEED_UP);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_speed_up));
                         }
                         break;
                     case R.id.iv_speed_down:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(FanProtocol.FAN_SPEED_DOWN, FAN_ON, current_speed--);
+                            communicationSchema(FanProtocol.FAN_SPEED_DOWN, FAN_ON, current_speed--, FanProtocol.INFRARED_SPEED_DOWN);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_speed_down));
 
@@ -230,7 +233,11 @@ public class FanActivity extends BaseActivity {
         }));
     }
 
-    private void communicationSchema(String fanProtocol, String fanState, int speed){
+    private void communicationSchema(String fanProtocol, String fanState, int speed, String infraredProtocol){
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+
         if(mSchema != null){
             if(mSchema.equals(LOCAL_NETWORK)){
                 ServerThread.sendToClient(fanProtocol);
@@ -246,6 +253,13 @@ public class FanActivity extends BaseActivity {
 
             }else {
                 //红外线
+                boolean hasInfrared = checkInfrared(this);
+                if (hasInfrared) {
+                    int[] pattern = InfraredTransformUtil.hex2time(infraredProtocol);
+                    ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
+                } else {
+                    ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
+                }
             }
         }
     }
@@ -254,6 +268,7 @@ public class FanActivity extends BaseActivity {
     private void initFanData(StateDetail stateDetail) {
         if(stateDetail != null){
             current_speed = stateDetail.speed;
+            equipOpen = stateDetail.equipOpen;
 
         }
     }

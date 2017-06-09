@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.smart.home.ConsumerIrManagerCompat;
@@ -99,6 +100,8 @@ public class BaseActivity extends AppCompatActivity {
     protected boolean isNetConnect = false;
 
     protected boolean isControlSuccess = false;
+
+    protected boolean equipOpen;
 
     protected String receiveMessage;
 
@@ -194,6 +197,16 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    //初始化开关状态
+    protected void initSwitch(boolean switchStatus, ImageView iv){
+        if(switchStatus){
+            iv.setImageResource(R.drawable.on);
+            isEquipOpen = true;
+        }else {
+            iv.setImageResource(R.drawable.off);
+        }
     }
 
 

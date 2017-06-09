@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.View;
 
+import com.smart.home.ConsumerIrManagerCompat;
 import com.smart.home.R;
 import com.smart.home.model.BulbProtocol;
 import com.smart.home.model.EquipData;
@@ -30,6 +31,7 @@ import com.smart.home.service.ServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.DateUtil;
+import com.smart.home.utils.InfraredTransformUtil;
 import com.smart.home.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -109,15 +111,13 @@ public class BulbControlActivity extends BaseActivity {
     }
 
     private void initView() {
-        //初始化SharedPreferences的操作类
-        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
-        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_BULB_ON, false);
-        if(switch_status){
-            ivBulb.setImageResource(R.drawable.bulb_on);
-            isEquipOpen = true;
-        }else {
-            ivBulb.setImageResource(R.drawable.bulb_off);
-            isEquipOpen = false;
+        if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+            //初始化SharedPreferences的操作类
+            mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+            boolean switch_status = mStatusPresenter.getBoolan(SWITCH_BULB_ON, false);
+            initSwitch(switch_status, ivBulb);
+        }else if(mSchema != null && mSchema.equals(SERVER)){
+            initSwitch(equipOpen, ivBulb);
         }
     }
 
@@ -131,43 +131,38 @@ public class BulbControlActivity extends BaseActivity {
 
     @OnClick({R.id.iv_bulb, R.id.iv_brightness_up, R.id.iv_brightness_down})
     public void onClick(View view) {
-        //获得当前媒体音量用来设置按键音大小
-        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         if (isSelectEquip) {
             if(isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_bulb:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
                             ivBulb.setImageResource(R.drawable.bulb_on);
                             isEquipOpen = true;
 
-                            communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++);
+                            communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++, BulbProtocol.INFRARED_ON);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_bulb));
                         } else {
                             ivBulb.setImageResource(R.drawable.bulb_off);
                             isEquipOpen = false;
 
-                            communicationSchema(BulbProtocol.BULB_OFF, null, -1);
+                            communicationSchema(BulbProtocol.BULB_OFF, null, -1, BulbProtocol.INFRARED_OFF);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_bulb));
                         }
                         break;
                     case R.id.iv_brightness_up:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++, BulbProtocol.BRIGHTNESS_UP);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_up));
                         }
                         break;
 
                     case R.id.iv_brightness_down:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--, BulbProtocol.BRIGHTNESS_DOWN);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_down));
                         }
@@ -209,7 +204,10 @@ public class BulbControlActivity extends BaseActivity {
 
     }
 
-    private void communicationSchema(String bulbProtocol, String bulbState, int brightness) {
+    private void communicationSchema(String bulbProtocol, String bulbState, int brightness, String infraredProtocol) {
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
         if (mSchema != null) {
             if (mSchema.equals(LOCAL_NETWORK)) {
                 ServerThread.sendToClient(bulbProtocol);
@@ -226,8 +224,12 @@ public class BulbControlActivity extends BaseActivity {
             } else {
                 //红外线
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    InfraredPresenter.getInstance(getBaseContext()).transmit(38000, null);
+                boolean hasInfrared = checkInfrared(this);
+                if (hasInfrared) {
+                    int[] pattern = InfraredTransformUtil.hex2time(infraredProtocol);
+                    ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
+                } else {
+                    ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
                 }
             }
         }
@@ -272,7 +274,11 @@ public class BulbControlActivity extends BaseActivity {
     }
 
     private void initBulbData(StateDetail stateDetail) {
-        current_brightness = stateDetail.brightness;
+        if(stateDetail != null) {
+            current_brightness = stateDetail.brightness;
+            equipOpen = stateDetail.equipOpen;
+        }
+
 
     }
     private void refreshUi(String message){

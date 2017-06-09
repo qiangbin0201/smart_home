@@ -128,15 +128,13 @@ public class TvControlActivity extends BaseActivity {
     }
 
     private void initView() {
-        //初始化SharedPreferences的操作类
-        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
-        boolean switch_status = mStatusPresenter.getBoolan(SWITCH_TV_ON, false);
-        if (switch_status) {
-            ivTvOff.setImageResource(R.drawable.on);
-            isEquipOpen = true;
-        } else {
-            ivTvOff.setImageResource(R.drawable.off);
-            isEquipOpen = false;
+        if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
+            //初始化SharedPreferences的操作类
+            mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+            boolean switch_status = mStatusPresenter.getBoolan(SWITCH_TV_ON, false);
+            initSwitch(switch_status, ivTvOff);
+        }else if(mSchema != null && mSchema.equals(SERVER)){
+            initSwitch(equipOpen, ivTvOff);
         }
 
     }
@@ -144,24 +142,20 @@ public class TvControlActivity extends BaseActivity {
 
     @OnClick({R.id.iv_tv_off, R.id.iv_sound_up, R.id.iv_sound_down, R.id.iv_channel_up, R.id.iv_channel_down})
     public void onClick(View view) {
-        //获得当前媒体音量用来设置按键音大小
-        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-
         if (isSelectEquip) {
             if (isNetConnect) {
                 switch (view.getId()) {
                     case R.id.iv_tv_off:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (!isEquipOpen) {
                             ivTvOff.setImageResource(R.drawable.on);
-                            communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume);
+                            communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume, TvProtocol.INFRARED_ON);
                             isEquipOpen = true;
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_tv));
                         } else {
                             ivTvOff.setImageResource(R.drawable.off);
-                            communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume);
+                            communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume, TvProtocol.INFRARED_OFF);
                             isEquipOpen = false;
 
                             long currentTime = System.currentTimeMillis();
@@ -171,36 +165,33 @@ public class TvControlActivity extends BaseActivity {
 
                         break;
                     case R.id.iv_sound_up:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++);
+                            communicationSchema(TvProtocol.TV_SOUND_UP, TV_ON, current_channel, current_volume++, TvProtocol.INFRARED_SOUND_UP);
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_sound_up));
                         }
                         break;
                     case R.id.iv_sound_down:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--);
+                            communicationSchema(TvProtocol.TV_SOUND_DOWN, TV_ON, current_channel, current_volume--, TvProtocol.INFRARED_SOUND_DOWN);
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_sound_down));
                         }
                         break;
                     case R.id.iv_channel_up:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
                         if (isEquipOpen()) {
-                            communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume);
+                            communicationSchema(TvProtocol.TV_CHANNEL_UP, TV_ON, current_channel++, current_volume, TvProtocol.INFRARED_CHANNEL_UP);
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_channel_up));
                         }
                         break;
                     case R.id.iv_channel_down:
-                        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
+
                         if (isEquipOpen()) {
-                            communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume);
+                            communicationSchema(TvProtocol.TV_CHANNEL_DOWN, TV_ON, current_channel--, current_volume, TvProtocol.INFRARED_CHANNEL_DOWN);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_channel_down));
                         }
@@ -235,7 +226,10 @@ public class TvControlActivity extends BaseActivity {
     }
 
 
-    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume) {
+    private void communicationSchema(String tvProtocol, String TvState, int channel, int volume, String infraredProtocol) {
+        //获得当前媒体音量用来设置按键音大小
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mSoundPool.play(mSound, streamVolumeCurrent, streamVolumeCurrent, 1, 0, 1);
         if (mSchema != null) {
             if (mSchema.equals(LOCAL_NETWORK)) {
                 ServerThread.sendToClient(tvProtocol);
@@ -253,7 +247,7 @@ public class TvControlActivity extends BaseActivity {
                 //红外线
                 boolean hasInfrared = checkInfrared(this);
                 if (hasInfrared) {
-                    int[] pattern = InfraredTransformUtil.hex2time(patternStr);
+                    int[] pattern = InfraredTransformUtil.hex2time(infraredProtocol);
                     ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
                 } else {
                     ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
@@ -312,6 +306,7 @@ public class TvControlActivity extends BaseActivity {
     private void initTvData(StateDetail stateDetail) {
         current_channel = stateDetail.tv_channel;
         current_volume = stateDetail.tv_volume;
+        equipOpen = stateDetail.equipOpen;
 
     }
 

@@ -10,6 +10,9 @@ public class StateDetail implements Serializable {
     //服务器返回状态
     public String state;
 
+    //服务器返回的设备开关状态
+    public boolean equipOpen;
+
     public int brightness;
 
     //服务器返回的音量值

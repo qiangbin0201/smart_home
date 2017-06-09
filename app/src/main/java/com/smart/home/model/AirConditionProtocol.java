@@ -22,7 +22,7 @@ public class AirConditionProtocol {
 
     public static final String INFRARED_ON = "S 1 0 1 0 0 0 0 C";
 
-    public static final String INFRARED_TEMP_YP = "S 1 0 1 1 0 0 0 C";
+    public static final String INFRARED_TEMP_UP = "S 1 0 1 1 0 0 0 C";
 
     public static final String INFRARED_TEMP_DOWN = "S 1 0 1 0 1 0 0 C";
 

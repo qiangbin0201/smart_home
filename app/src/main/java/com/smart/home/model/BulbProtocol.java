@@ -6,9 +6,9 @@ package com.smart.home.model;
 
 public class BulbProtocol {
 
-    public static final String BULB_OFF = "000";
+    public static final String BULB_OFF = "01";
 
-    public static final String BULB_ON = "100";
+    public static final String BULB_ON = "02";
 
     public static final String BRIGHTNESS_UP = "110";
 

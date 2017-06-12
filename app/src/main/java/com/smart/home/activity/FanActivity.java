@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +24,6 @@ import com.smart.home.presenter.OperationDataPresenter;
 import com.smart.home.presenter.ServerThread;
 import com.smart.home.presenter.StatusPresenter;
 import com.smart.home.service.ServerService;
-import com.smart.home.service.TvServerService;
 import com.smart.home.utils.CollectionUtil;
 import com.smart.home.utils.CustomDialogFactory;
 import com.smart.home.utils.DateUtil;
@@ -84,6 +82,7 @@ public class FanActivity extends BaseActivity {
         super.onStart();
         //初始化数据库
         EquipDataPresenter.getInstance().initDbHelp(this);
+        OperationDataPresenter.getInstance().initDbHelp(this);
 
         initData();
     }
@@ -107,6 +106,7 @@ public class FanActivity extends BaseActivity {
     }
 
     private void initView() {
+        mSchema = getIntent().getStringExtra(SCHEMA);
         if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
             mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
             boolean switch_status = mStatusPresenter.getBoolan(SWITCH_FAN_ON, false);
@@ -290,9 +290,11 @@ public class FanActivity extends BaseActivity {
         if (receiveMessage != null) {
             if (receiveMessage.equals(TvProtocol.TV_ON)) {
                 ivFan.setImageResource(R.drawable.on);
+                isEquipOpen = true;
                 mStatusPresenter.putBoolean(SWITCH_FAN_ON, true);
             } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
                 ivFan.setImageResource(R.drawable.off);
+                isEquipOpen = false;
                 mStatusPresenter.putBoolean(SWITCH_FAN_ON, false);
             }
         }

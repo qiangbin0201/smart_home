@@ -106,6 +106,7 @@ public class TvControlActivity extends BaseActivity {
 //
 //        }
         EquipDataPresenter.getInstance().initDbHelp(this);
+        OperationDataPresenter.getInstance().initDbHelp(this);
         initData();
     }
 
@@ -128,6 +129,7 @@ public class TvControlActivity extends BaseActivity {
     }
 
     private void initView() {
+        mSchema = getIntent().getStringExtra(SCHEMA);
         if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
             //初始化SharedPreferences的操作类
             mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
@@ -147,14 +149,12 @@ public class TvControlActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_tv_off:
                         if (!isEquipOpen) {
-                            ivTvOff.setImageResource(R.drawable.on);
                             communicationSchema(TvProtocol.TV_ON, TV_ON, current_channel, current_volume, TvProtocol.INFRARED_ON);
                             isEquipOpen = true;
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_tv));
                         } else {
-                            ivTvOff.setImageResource(R.drawable.off);
                             communicationSchema(TvProtocol.TV_OFF, TV_OFF, current_channel, current_volume, TvProtocol.INFRARED_OFF);
                             isEquipOpen = false;
 
@@ -314,9 +314,11 @@ public class TvControlActivity extends BaseActivity {
         if (receiveMessage != null) {
             if (receiveMessage.equals(TvProtocol.TV_ON)) {
                 ivTvOff.setImageResource(R.drawable.on);
+                isEquipOpen = true;
                 mStatusPresenter.putBoolean(SWITCH_TV_ON, true);
             } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
                 ivTvOff.setImageResource(R.drawable.off);
+                isEquipOpen = false;
                 mStatusPresenter.putBoolean(SWITCH_TV_ON, false);
             }
         }

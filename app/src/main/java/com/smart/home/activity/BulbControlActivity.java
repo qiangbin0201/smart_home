@@ -90,8 +90,9 @@ public class BulbControlActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //初始化数据库
+//        初始化数据库
         EquipDataPresenter.getInstance().initDbHelp(this);
+        OperationDataPresenter.getInstance().initDbHelp(this);
 
         initData();
     }
@@ -111,13 +112,26 @@ public class BulbControlActivity extends BaseActivity {
     }
 
     private void initView() {
+        mSchema = getIntent().getStringExtra(SCHEMA);
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
         if(mSchema != null && mSchema.equals(LOCAL_NETWORK)) {
             //初始化SharedPreferences的操作类
-            mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+
             boolean switch_status = mStatusPresenter.getBoolan(SWITCH_BULB_ON, false);
-            initSwitch(switch_status, ivBulb);
+            if(switch_status){
+                ivBulb.setImageResource(R.drawable.bulb_on);
+                isEquipOpen = true;
+            }else {
+                ivBulb.setImageResource(R.drawable.bulb_off);
+            }
+//            initSwitch(switch_status, ivBulb);
         }else if(mSchema != null && mSchema.equals(SERVER)){
-            initSwitch(equipOpen, ivBulb);
+            if(equipOpen){
+                ivBulb.setImageResource(R.drawable.bulb_on);
+                isEquipOpen = true;
+            }else {
+                ivBulb.setImageResource(R.drawable.bulb_off);
+            }
         }
     }
 
@@ -137,14 +151,14 @@ public class BulbControlActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_bulb:
                         if (!isEquipOpen) {
-                            ivBulb.setImageResource(R.drawable.bulb_on);
+//                            ivBulb.setImageResource(R.drawable.bulb_on);
                             isEquipOpen = true;
 
                             communicationSchema(BulbProtocol.BULB_ON, BULB_ON, current_brightness++, BulbProtocol.INFRARED_ON);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_bulb));
                         } else {
-                            ivBulb.setImageResource(R.drawable.bulb_off);
+//                            ivBulb.setImageResource(R.drawable.bulb_off);
                             isEquipOpen = false;
 
                             communicationSchema(BulbProtocol.BULB_OFF, null, -1, BulbProtocol.INFRARED_OFF);
@@ -154,7 +168,7 @@ public class BulbControlActivity extends BaseActivity {
                         break;
                     case R.id.iv_brightness_up:
                         if (isEquipOpen()) {
-                            communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++, BulbProtocol.BRIGHTNESS_UP);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_UP, BULB_ON, current_brightness++, BulbProtocol.INFRARED_BRIGHTNESS_UP);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_up));
                         }
@@ -162,7 +176,7 @@ public class BulbControlActivity extends BaseActivity {
 
                     case R.id.iv_brightness_down:
                         if (isEquipOpen()) {
-                            communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--, BulbProtocol.BRIGHTNESS_DOWN);
+                            communicationSchema(BulbProtocol.BRIGHTNESS_DOWN, BULB_ON, current_brightness--, BulbProtocol.INFRARED_BRIGHTNESS_DOWN);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_brightness_down));
                         }
@@ -223,11 +237,13 @@ public class BulbControlActivity extends BaseActivity {
 
             } else {
                 //红外线
-
                 boolean hasInfrared = checkInfrared(this);
                 if (hasInfrared) {
                     int[] pattern = InfraredTransformUtil.hex2time(infraredProtocol);
-                    ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        InfraredPresenter.getInstance(this).transmit(3400, pattern);
+                    }
+//                    ConsumerIrManagerCompat.getInstance(this).transmit(3400, pattern);
                 } else {
                     ToastUtil.showFailed(this, getString(R.string.device_no_infrared_function));
                 }
@@ -284,9 +300,11 @@ public class BulbControlActivity extends BaseActivity {
     private void refreshUi(String message){
         if(message.equals(BulbProtocol.BULB_ON)){
             ivBulb.setImageResource(R.drawable.bulb_on);
+            isEquipOpen = true;
             mStatusPresenter.putBoolean(SWITCH_BULB_ON, true);
         }else if(message.equals(BulbProtocol.BULB_OFF)){
             ivBulb.setImageResource(R.drawable.bulb_off);
+            isEquipOpen = false;
             mStatusPresenter.putBoolean(SWITCH_BULB_ON, false);
         }
         //其他UI刷新

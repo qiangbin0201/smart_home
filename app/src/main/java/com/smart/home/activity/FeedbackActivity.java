@@ -83,16 +83,16 @@ public class FeedbackActivity extends BaseActivity {
     }
 
     private void feedback(String content, String mobile) {
-//        FeedbackPresenter presenter = new FeedbackPresenter();
-//        addSubscription(presenter.feedback(content, mobile).observeOn(AndroidSchedulers.mainThread()).subscribe(
-//                r -> {
-//
-//                    ToastUtil.showBottom(this, getString(R.string.feedback_success));
+        FeedbackPresenter presenter = new FeedbackPresenter();
+        addSubscription(presenter.feedback(content, mobile).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                r -> {
+
+                    ToastUtil.showBottom(this, getString(R.string.feedback_success));
                     finish();
-//                },
-//                e -> {
-//                    ToastUtil.showBottom(this, getString(R.string.feedback_fail));
-//                }
-//        ));
+                },
+                e -> {
+                    ToastUtil.showBottom(this, getString(R.string.feedback_fail));
+                }
+        ));
     }
 }

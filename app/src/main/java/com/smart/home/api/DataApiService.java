@@ -15,19 +15,19 @@ import rx.Observable;
 public interface DataApiService {
 
     @FormUrlEncoded
-    @POST("")
+    @POST("/control/data")
     Observable<BaseResponse<StateDetail>> getBulbData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("brightness") int brightness);
 
     @FormUrlEncoded
-    @POST("")
+    @POST("/control/data")
     Observable<BaseResponse<StateDetail>> getTvData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("channel") int channel, @Field("volume") int volume);
 
     @FormUrlEncoded
-    @POST("")
+    @POST("/control/data")
     Observable<BaseResponse<StateDetail>> getAirConditionData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("mode") String mode, @Field("temperature") int temperature);
 
     @FormUrlEncoded
-    @POST("")
+    @POST("/control/data")
     Observable<BaseResponse<StateDetail>> getFanData(@Field("equipName") String equipName, @Field("equipCode") String equipCode, @Field("state") String state, @Field("speed") int speed);
 
 }

@@ -14,6 +14,6 @@ public class FeedbackPresenter {
 
     public Observable<BaseResponse> feedback(String content, String mobile) {
         FeedbackApiService service = AppProxy.getInstance().getDataApiRestAdapter().create(FeedbackApiService.class);
-        return service.feedback( mobile, content);
+        return service.feedback(mobile, content);
     }
 }

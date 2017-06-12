@@ -6,7 +6,6 @@ package com.smart.home.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
@@ -27,16 +26,14 @@ import android.widget.LinearLayout;
 
 import com.smart.home.ConsumerIrManagerCompat;
 import com.smart.home.R;
-import com.smart.home.api.BaseResponse;
 import com.smart.home.confige.AppProxy;
 import com.smart.home.model.EquipData;
-import com.smart.home.model.StateDetail;
 import com.smart.home.model.ToolbarFactory;
 import com.smart.home.model.ToolbarStyle;
 import com.smart.home.model.ToolbarWrapper;
 import com.smart.home.model.WeakRefHandler;
+import com.smart.home.presenter.InfraredPresenter;
 import com.smart.home.presenter.StatusPresenter;
-import com.smart.home.service.ServerService;
 import com.smart.home.utils.ActivityStack;
 import com.smart.home.utils.NetWorkUtil;
 import com.smart.home.utils.ToastUtil;
@@ -47,7 +44,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -193,8 +189,10 @@ public class BaseActivity extends AppCompatActivity {
 
     //检查设备是否有红外功能
     protected boolean checkInfrared(Context context){
-        if(ConsumerIrManagerCompat.getInstance(context).hasIrEmitter()){
-            return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if(InfraredPresenter.getInstance(context).hasIrEmitter()){
+                return true;
+            }
         }
         return false;
     }

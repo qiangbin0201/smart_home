@@ -31,7 +31,7 @@ public class OperationDataPresenter {
 
     //初始化数据库
     public void initDbHelp(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "equip-db", null);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "operation-db", null);
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         DaoSession daoSession = daoMaster.newSession();

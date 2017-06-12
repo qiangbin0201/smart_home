@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by leonlee on 14-5-28.
- * To better product,to better world
+ * Created by qiangbin on 17-6-8.
+ *
  */
 public class DateUtil {
 

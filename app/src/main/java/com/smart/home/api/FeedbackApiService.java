@@ -11,6 +11,6 @@ import rx.Observable;
 public interface FeedbackApiService {
 
     @FormUrlEncoded
-    @POST("")
+    @POST("/feedback/data")
     Observable<BaseResponse> feedback( @Field("contact_info") String mobile, @Field("content") String content);
 }

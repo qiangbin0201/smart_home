@@ -59,17 +59,15 @@ public class AirConditionActivity extends BaseActivity {
 
     private static final String AIR_CONDITION_OFF = "air_condition_off";
 
-    private List<String> mEquipPositionList;
+    private static final String CURRENT_MODE = "current_mode";
 
-    private boolean isEquipOpen = false;
+    private List<String> mEquipPositionList;
 
     private MyReceiver mMyRervice;
 
     private int current_temp;
 
-    private int current_mode;
-
-    private int changed_mode;
+    private int current_mode = 1;
 
     private static final String SWITCH_AIR_ON = "switch_air_on";
 
@@ -100,6 +98,7 @@ public class AirConditionActivity extends BaseActivity {
         super.onStart();
         //初始化数据库
         EquipDataPresenter.getInstance().initDbHelp(this);
+        OperationDataPresenter.getInstance().initDbHelp(this);
 
         initData();
     }
@@ -122,12 +121,19 @@ public class AirConditionActivity extends BaseActivity {
     }
 
     private void initView() {
+        mSchema = getIntent().getStringExtra(SCHEMA);
+        mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
         if(mSchema != null && mSchema.equals(LOCAL_NETWORK) ) {
-            mStatusPresenter = StatusPresenter.getInstance(this, EQUIP_STATUS_FILE);
+
             boolean switch_status = mStatusPresenter.getBoolan(SWITCH_AIR_ON, false);
             initSwitch(switch_status, ivAirCondition);
+            current_mode = mStatusPresenter.getInt(CURRENT_MODE, -1);
+            if(current_mode != -1){
+                tvMode.setText(mode[current_mode]);
+            }
         }else if (mSchema != null && mSchema.equals(SERVER)){
             initSwitch(equipOpen, ivAirCondition);
+            tvMode.setText(mode[current_mode]);
         }
 //        if (switch_status) {
 //            ivAirCondition.setImageResource(R.drawable.on);
@@ -171,14 +177,18 @@ public class AirConditionActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_air_condition:
                         if (!isEquipOpen) {
-                            communicationSchema(AirConditionProtocol.AIR_CONDITION_ON, AIR_CONDITION_ON, mode[1], current_temp, AirConditionProtocol.INFRARED_ON);
+
                             isEquipOpen = true;
+                            ivAirCondition.setImageResource(R.drawable.on);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_ON, AIR_CONDITION_ON, mode[1], current_temp, AirConditionProtocol.INFRARED_ON);
 
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_open_airCondition));
                         } else {
-                            communicationSchema(AirConditionProtocol.AIR_CONDITION_OFF, AIR_CONDITION_OFF, mode[1], current_temp, AirConditionProtocol.INFRARED_OFF);
+
                             isEquipOpen = false;
+                            ivAirCondition.setImageResource(R.drawable.off);
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_OFF, AIR_CONDITION_OFF, mode[1], current_temp, AirConditionProtocol.INFRARED_OFF);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_close_airCondition));
                         }
@@ -201,18 +211,18 @@ public class AirConditionActivity extends BaseActivity {
                         break;
                     case R.id.iv_mode_up:
                         if (isEquipOpen()) {
-                            changed_mode = current_mode < 2 ? current_mode++ : 0;
-                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_UP, AIR_CONDITION_ON, mode[changed_mode], current_temp, AirConditionProtocol.INFRARED_MODE_UP);
-                            tvMode.setText(mode[changed_mode]);
+//                            current_mode = current_mode < 2 ? ++current_mode : 0;
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_UP, AIR_CONDITION_ON, mode[current_mode], current_temp, AirConditionProtocol.INFRARED_MODE_UP);
+//                            tvMode.setText(mode[current_mode]);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_mode_up));
                         }
                         break;
                     case R.id.iv_mode_down:
                         if (isEquipOpen()) {
-                            changed_mode = current_mode > 0 ? current_mode-- : 2;
-                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_DOWN, AIR_CONDITION_ON, mode[changed_mode], current_temp, AirConditionProtocol.INFRARED_MODE_DOWN);
-                            tvMode.setText(mode[changed_mode]);
+//                            current_mode = current_mode > 0 ? --current_mode : 2;
+                            communicationSchema(AirConditionProtocol.AIR_CONDITION_MODE_DOWN, AIR_CONDITION_ON, mode[current_mode], current_temp, AirConditionProtocol.INFRARED_MODE_DOWN);
+//                            tvMode.setText(mode[current_mode]);
                             long currentTime = System.currentTimeMillis();
                             OperationDataPresenter.getInstance().insertData(DateUtil.formatDateTime(currentTime, "yyyy-MM-dd HH:mm"), mSelectEquipCode, getString(R.string.data_mode_down));
                         }
@@ -248,7 +258,6 @@ public class AirConditionActivity extends BaseActivity {
                 }));
 
             } else {
-                //红外线
                 //红外线
                 boolean hasInfrared = checkInfrared(this);
                 if (hasInfrared) {
@@ -344,12 +353,22 @@ public class AirConditionActivity extends BaseActivity {
 
     private void refreshUi(String receiveMessage) {
         if (receiveMessage != null) {
-            if (receiveMessage.equals(TvProtocol.TV_ON)) {
+            if (receiveMessage.equals(AirConditionProtocol.AIR_CONDITION_ON)) {
                 ivAirCondition.setImageResource(R.drawable.on);
+                isEquipOpen = true;
                 mStatusPresenter.putBoolean(SWITCH_AIR_ON, true);
-            } else if (receiveMessage.equals(TvProtocol.TV_OFF)) {
+            } else if (receiveMessage.equals(AirConditionProtocol.AIR_CONDITION_OFF)) {
                 ivAirCondition.setImageResource(R.drawable.off);
+                isEquipOpen = false;
                 mStatusPresenter.putBoolean(SWITCH_AIR_ON, false);
+            }else if(receiveMessage.equals(AirConditionProtocol.AIR_CONDITION_MODE_UP)){
+                current_mode = current_mode < 2 ? ++current_mode : 0;
+                tvMode.setText(mode[current_mode]);
+                mStatusPresenter.getInt(CURRENT_MODE, current_mode);
+            }else if(receiveMessage.equals(AirConditionProtocol.AIR_CONDITION_MODE_DOWN)){
+                current_mode = current_mode > 0 ? --current_mode : 2;
+                tvMode.setText(mode[current_mode]);
+                mStatusPresenter.getInt(CURRENT_MODE, current_mode);
             }
         }
 

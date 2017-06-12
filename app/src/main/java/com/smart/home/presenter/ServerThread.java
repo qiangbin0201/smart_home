@@ -43,7 +43,7 @@ public class ServerThread extends Thread
 	public void run()
 	{
 		//通知service已经有客户端连接
-		mUiHandler.sendEmptyMessage(HandlerProtocol.NET_CONNECT);
+
 
 		new Thread(){
 			@Override
@@ -62,10 +62,12 @@ public class ServerThread extends Thread
 								}
 							}
 							if(isSelectedEquip) {
+								mUiHandler.sendEmptyMessage(HandlerProtocol.NET_CONNECT);
 								Message message = new Message();
 								message.what = HandlerProtocol.CONTROL_SUCCESS;
 								message.obj = content;
 								mUiHandler.sendMessage(message);
+								mUiHandler.sendEmptyMessage(HandlerProtocol.NET_CONNECT);
 							}
 
                         }
@@ -82,10 +84,10 @@ public class ServerThread extends Thread
 
     public static void sendToClient(String content){
 		if(isSelectedEquip) {
-			String temp = RadixUtil.intString2hexString(content);
-			byte[] buf = RadixUtil.hexString2Bytes(temp);
+//			String temp = RadixUtil.intString2hexString(content);
+//			byte[] buf = RadixUtil.hexString2Bytes(temp);
 			try {
-				os.write(buf);
+				os.write((content+"\n").getBytes("ASCII"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
